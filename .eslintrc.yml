@@ -1,0 +1,43 @@
+plugins:
+  - '@typescript-eslint'
+
+extends:
+  - 'standard'
+  - 'prettier'
+
+parser: '@typescript-eslint/parser'
+
+overrides:
+  - files:
+      - 'src/**/*.test.ts'
+      - 'src/**/*.e2e.ts'
+    env:
+      mocha: true
+  - files:
+      - '**/*.js'
+    parserOptions:
+      # Override eslint-config-standard, which incorrectly sets this to "module",
+      # though that setting is only for ES6 modules, not CommonJS modules.
+      sourceType: 'script'
+    rules:
+      '@typescript-eslint/explicit-function-return-type': 'off'
+
+rules:
+  # Disable some rules from eslint:recommended.
+  no-empty: ['error', { 'allowEmptyCatch': true }]
+  # Allow unused parameters. In callbacks, removing them seems to obscure
+  # what the functions are doing.
+  no-unused-vars: ['error', { 'args': 'none' }]
+
+  # We keep whitespace cleaned up.
+  no-trailing-spaces: 'error'
+  eol-last: 'error'
+
+  # Our additions.
+  no-var: 'error'
+  prefer-const: 'error'
+  strict: 'error'
+
+  '@typescript-eslint/no-unused-vars': ['error', { 'args': 'none' }]
+  '@typescript-eslint/explicit-function-return-type':
+    ['error', { 'allowExpressions': true }]

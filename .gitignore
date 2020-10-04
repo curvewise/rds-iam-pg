@@ -1,0 +1,15 @@
+node_modules
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+rds.env
+
+/config/local*.yml
+# Template for the local runtime configuration.
+!/config/local*.example.yml
+
+.DS_Store
+/dist
+

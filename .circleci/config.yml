@@ -1,0 +1,115 @@
+version: 2
+jobs:
+  test:
+    # Adapted from https://circleci.com/docs/2.0/databases/#postgresql-database-testing-example
+    docker:
+      - image: circleci/node:12
+        environment:
+          DATABASE_URL: postgresql://circleci:AchTMOV0lWxIJO7Os0YCZ7iUAOp2OCm3XP2pWjsfIcE@localhost/circle_test
+      - image: circleci/postgres:12.4
+        environment:
+          POSTGRES_USER: circleci
+          # In a secondary container, this value can't be set from the environment.
+          # https://discuss.circleci.com/t/postgresql-image-password-not-specified-issue/34555
+          POSTGRES_PASSWORD: 'AchTMOV0lWxIJO7Os0YCZ7iUAOp2OCm3XP2pWjsfIcE'
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install container dependencies
+          command: sudo apt-get install -qq -y postgresql-client
+
+      - run:
+          name: Show Postgres version
+          command: |
+            psql --version
+            psql $DATABASE_URL -c "SELECT version();"
+
+      - run:
+          name: Configure credentials for GitHub Package Registry
+          command: npm run configure-github-package-registry
+
+      - run:
+          name: Install Node dependencies
+          command: npm ci
+
+      - run:
+          name: Check that seed data will load
+          command: npm run load-seed-data
+
+      - run:
+          name: Run tests
+          environment:
+            NODE_CONFIG_ENV: ci
+          command: npm test
+
+      - run:
+          name: Check types
+          when: always
+          command: npm run check-types
+
+  lint:
+    docker:
+      - image: circleci/node:12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Configure credentials for GitHub Package Registry
+          command: npm run configure-github-package-registry
+
+      - run:
+          name: Install Node dependencies
+          command: npm ci
+
+      - run:
+          name: Check lint
+          command: npm run lint
+
+  format:
+    docker:
+      - image: circleci/node:12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Configure credentials for GitHub Package Registry
+          command: npm run configure-github-package-registry
+
+      - run:
+          name: Install Node dependencies
+          command: npm ci
+
+      - run:
+          name: Check code format
+          command: npm run format:check
+
+workflows:
+  version: 2
+
+  on-commit:
+    jobs:
+      - test:
+          context: 'GitHub - Read packages'
+      - lint:
+          context: 'GitHub - Read packages'
+      - format:
+          context: 'GitHub - Read packages'
+
+  daily:
+    triggers:
+      - schedule:
+          cron: '0 17 * * *'
+          filters:
+            branches:
+              only: main
+    jobs:
+      - test:
+          context: 'GitHub - Read packages'
+      - lint:
+          context: 'GitHub - Read packages'
+      - format:
+          context: 'GitHub - Read packages'
