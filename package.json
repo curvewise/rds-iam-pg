@@ -11,5 +11,9 @@
   "dependencies": {
     "express": "^4.17.1",
     "postgraphile": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
   }
 }
