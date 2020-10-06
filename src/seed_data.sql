@@ -6,13 +6,25 @@ COPY public.batches (id, name, units, reference_frame_up, reference_frame_look) 
 1	2020-09-19	cm	{0,1,0}	{0,0,1}
 \.
 
+--
+-- Data for Name: measured_bodies; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.measured_bodies (id, name, s3_bucket, s3_path, tape_width, gender, pose, batch) FROM stdin;
+1	body1	test_bucket	/bodies/body1.obj	0.200000000000000011	F	A	1
+2	body2	test_bucket	/bodies/body2.obj	0.200000000000000011	F	A	1
+3	body3	test_bucket	/bodies/body3.obj	0.200000000000000011	F	A	1
+\.
+
 
 --
 -- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.comments (id, content, body, landmark, computed_point, value, curve) FROM stdin;
-\.
+insert into public.comments values (1, 'Lorem	ipsum	dolor	sit	amet,	consectetur	adipiscing	elit,	sed	do	eiusmod	tempor	incididunt	ut	labore	et	dolore	magna	aliqua.	Ut	enim	ad	minim	veniam,	quis	nostrud	exercitation	ullamco	laboris	nisi	ut	aliquip	ex	ea	commodo	consequat.	Duis	aute	irure	dolor	in	reprehenderit	in	voluptate	velit	esse	cillum	dolore	eu	fugiat	nulla	pariatur.	Excepteur	sint	occaecat	cupidatat	non	proident,	sunt	in	culpa	qui	officia	deserunt	mollit	anim	id	est	laborum.');
+insert into public.comments values (2, 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.');
+insert into public.comments values (3, 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.');
+insert into public.comments values (4, 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 
 
 --
@@ -22,13 +34,6 @@ COPY public.comments (id, content, body, landmark, computed_point, value, curve)
 COPY public.computed_points (vertex, id, name, body) FROM stdin;
 \.
 
-
---
--- Data for Name: computed_points_to_labels_association_table; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.computed_points_to_labels_association_table (id, computed_points_id, labels_id) FROM stdin;
-\.
 
 
 --
@@ -44,22 +49,6 @@ COPY public.curves (id, name, is_closed, vertices, body) FROM stdin;
 
 
 --
--- Data for Name: curves_to_labels_association_table; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.curves_to_labels_association_table (id, curves_id, labels_id) FROM stdin;
-\.
-
-
---
--- Data for Name: feedback_association; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.feedback_association (measured_bodies_id, labels_id) FROM stdin;
-\.
-
-
---
 -- Data for Name: labels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -68,6 +57,21 @@ COPY public.labels (id, name) FROM stdin;
 2	bar
 3	bat
 \.
+
+
+--
+-- Data for Name: feedback_association; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+insert into public.feedback_associations values(1,1,null,null,null,null,1,null);
+insert into public.feedback_associations values(2,1,null,null,null,null,1,null);
+insert into public.feedback_associations values(3,1,null,null,null,null,null,1);
+insert into public.feedback_associations values(4,1,null,null,null,null,null,2);
+insert into public.feedback_associations values(5,1,null,null,null,null,null,3);
+insert into public.feedback_associations values(6,2,null,null,null,null,null,1);
+insert into public.feedback_associations values(7,2,null,null,null,null,2,null);
+
+
 
 
 --
@@ -87,32 +91,8 @@ COPY public.landmarks (vertex, id, landmark_name, landmark_set_name, body) FROM 
 \.
 
 
---
--- Data for Name: landmarks_to_labels_association_table; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.landmarks_to_labels_association_table (id, landmarks_id, labels_id) FROM stdin;
-\.
 
 
---
--- Data for Name: measured_bodies; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.measured_bodies (id, name, s3_bucket, s3_path, tape_width, gender, pose, batch) FROM stdin;
-1	body1	test	/bodies/body1.obj	0.200000000000000011	F	A	1
-\.
-
-
---
--- Data for Name: measured_bodies_to_labels_association_table; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.measured_bodies_to_labels_association_table (id, measured_bodies_id, labels_id) FROM stdin;
-1	1	1
-2	1	2
-3	1	3
-\.
 
 
 --
@@ -124,14 +104,6 @@ COPY public."values" (id, name, value, units, body) FROM stdin;
 2	inseam	75.480000000000004	cm	1
 3	neck	40.8599999999999994	cm	1
 4	hip	102.590000000000003	cm	1
-\.
-
-
---
--- Data for Name: values_to_labels_association_table; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.values_to_labels_association_table (id, values_id, labels_id) FROM stdin;
 \.
 
 

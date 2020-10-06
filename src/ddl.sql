@@ -1,3 +1,9 @@
+drop schema public cascade;
+drop schema postgraphile_watch cascade;
+
+create schema public;
+create schema postgraphile_watch;
+
 --
 -- PostgreSQL database dump
 --
@@ -141,12 +147,7 @@ ALTER SEQUENCE public.batches_id_seq OWNED BY public.batches.id;
 
 CREATE TABLE public.comments (
     id integer NOT NULL,
-    content text,
-    body integer,
-    landmark integer,
-    computed_point integer,
-    value integer,
-    curve integer
+    content text
 );
 
 
@@ -211,39 +212,6 @@ ALTER TABLE public.computed_points_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.computed_points_id_seq OWNED BY public.computed_points.id;
 
 
---
--- Name: computed_points_to_labels_association_table; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.computed_points_to_labels_association_table (
-    id integer NOT NULL,
-    computed_points_id integer,
-    labels_id integer
-);
-
-
-ALTER TABLE public.computed_points_to_labels_association_table OWNER TO postgres;
-
---
--- Name: computed_points_to_labels_association_table_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.computed_points_to_labels_association_table_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.computed_points_to_labels_association_table_id_seq OWNER TO postgres;
-
---
--- Name: computed_points_to_labels_association_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.computed_points_to_labels_association_table_id_seq OWNED BY public.computed_points_to_labels_association_table.id;
 
 
 --
@@ -284,52 +252,6 @@ ALTER TABLE public.curves_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.curves_id_seq OWNED BY public.curves.id;
 
 
---
--- Name: curves_to_labels_association_table; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.curves_to_labels_association_table (
-    id integer NOT NULL,
-    curves_id integer,
-    labels_id integer
-);
-
-
-ALTER TABLE public.curves_to_labels_association_table OWNER TO postgres;
-
---
--- Name: curves_to_labels_association_table_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.curves_to_labels_association_table_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.curves_to_labels_association_table_id_seq OWNER TO postgres;
-
---
--- Name: curves_to_labels_association_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.curves_to_labels_association_table_id_seq OWNED BY public.curves_to_labels_association_table.id;
-
-
---
--- Name: feedback_association; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.feedback_association (
-    measured_bodies_id integer,
-    labels_id integer
-);
-
-
-ALTER TABLE public.feedback_association OWNER TO postgres;
 
 --
 -- Name: labels; Type: TABLE; Schema: public; Owner: postgres
@@ -404,41 +326,6 @@ ALTER SEQUENCE public.landmarks_id_seq OWNED BY public.landmarks.id;
 
 
 --
--- Name: landmarks_to_labels_association_table; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.landmarks_to_labels_association_table (
-    id integer NOT NULL,
-    landmarks_id integer,
-    labels_id integer
-);
-
-
-ALTER TABLE public.landmarks_to_labels_association_table OWNER TO postgres;
-
---
--- Name: landmarks_to_labels_association_table_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.landmarks_to_labels_association_table_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.landmarks_to_labels_association_table_id_seq OWNER TO postgres;
-
---
--- Name: landmarks_to_labels_association_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.landmarks_to_labels_association_table_id_seq OWNED BY public.landmarks_to_labels_association_table.id;
-
-
---
 -- Name: measured_bodies; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -478,40 +365,6 @@ ALTER TABLE public.measured_bodies_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.measured_bodies_id_seq OWNED BY public.measured_bodies.id;
 
 
---
--- Name: measured_bodies_to_labels_association_table; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.measured_bodies_to_labels_association_table (
-    id integer NOT NULL,
-    measured_bodies_id integer,
-    labels_id integer
-);
-
-
-ALTER TABLE public.measured_bodies_to_labels_association_table OWNER TO postgres;
-
---
--- Name: measured_bodies_to_labels_association_table_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.measured_bodies_to_labels_association_table_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.measured_bodies_to_labels_association_table_id_seq OWNER TO postgres;
-
---
--- Name: measured_bodies_to_labels_association_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.measured_bodies_to_labels_association_table_id_seq OWNED BY public.measured_bodies_to_labels_association_table.id;
-
 
 --
 -- Name: values; Type: TABLE; Schema: public; Owner: postgres
@@ -550,24 +403,19 @@ ALTER TABLE public.values_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.values_id_seq OWNED BY public."values".id;
 
 
---
--- Name: values_to_labels_association_table; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.values_to_labels_association_table (
+CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
-    values_id integer,
-    labels_id integer
+    body integer,
+    landmark integer,
+    computed_point integer,
+    value integer,
+    curve integer,
+    comment integer,
+    label integer
 );
 
 
-ALTER TABLE public.values_to_labels_association_table OWNER TO postgres;
-
---
--- Name: values_to_labels_association_table_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.values_to_labels_association_table_id_seq
+CREATE SEQUENCE public.feedback_associations_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -575,14 +423,11 @@ CREATE SEQUENCE public.values_to_labels_association_table_id_seq
     NO MAXVALUE
     CACHE 1;
 
+ALTER SEQUENCE public.feedback_associations_id_seq OWNED BY public.feedback_associations.id;
 
-ALTER TABLE public.values_to_labels_association_table_id_seq OWNER TO postgres;
+ALTER TABLE ONLY public.feedback_associations ALTER COLUMN id SET DEFAULT nextval('public.feedback_associations_id_seq'::regclass);
 
---
--- Name: values_to_labels_association_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.values_to_labels_association_table_id_seq OWNED BY public.values_to_labels_association_table.id;
+SELECT pg_catalog.setval('public.feedback_associations_id_seq', 1, false);
 
 
 --
@@ -606,25 +451,12 @@ ALTER TABLE ONLY public.comments ALTER COLUMN id SET DEFAULT nextval('public.com
 ALTER TABLE ONLY public.computed_points ALTER COLUMN id SET DEFAULT nextval('public.computed_points_id_seq'::regclass);
 
 
---
--- Name: computed_points_to_labels_association_table id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points_to_labels_association_table ALTER COLUMN id SET DEFAULT nextval('public.computed_points_to_labels_association_table_id_seq'::regclass);
-
 
 --
 -- Name: curves id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.curves ALTER COLUMN id SET DEFAULT nextval('public.curves_id_seq'::regclass);
-
-
---
--- Name: curves_to_labels_association_table id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves_to_labels_association_table ALTER COLUMN id SET DEFAULT nextval('public.curves_to_labels_association_table_id_seq'::regclass);
 
 
 --
@@ -641,12 +473,6 @@ ALTER TABLE ONLY public.labels ALTER COLUMN id SET DEFAULT nextval('public.label
 ALTER TABLE ONLY public.landmarks ALTER COLUMN id SET DEFAULT nextval('public.landmarks_id_seq'::regclass);
 
 
---
--- Name: landmarks_to_labels_association_table id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks_to_labels_association_table ALTER COLUMN id SET DEFAULT nextval('public.landmarks_to_labels_association_table_id_seq'::regclass);
-
 
 --
 -- Name: measured_bodies id; Type: DEFAULT; Schema: public; Owner: postgres
@@ -655,12 +481,6 @@ ALTER TABLE ONLY public.landmarks_to_labels_association_table ALTER COLUMN id SE
 ALTER TABLE ONLY public.measured_bodies ALTER COLUMN id SET DEFAULT nextval('public.measured_bodies_id_seq'::regclass);
 
 
---
--- Name: measured_bodies_to_labels_association_table id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.measured_bodies_to_labels_association_table ALTER COLUMN id SET DEFAULT nextval('public.measured_bodies_to_labels_association_table_id_seq'::regclass);
-
 
 --
 -- Name: values id; Type: DEFAULT; Schema: public; Owner: postgres
@@ -668,12 +488,6 @@ ALTER TABLE ONLY public.measured_bodies_to_labels_association_table ALTER COLUMN
 
 ALTER TABLE ONLY public."values" ALTER COLUMN id SET DEFAULT nextval('public.values_id_seq'::regclass);
 
-
---
--- Name: values_to_labels_association_table id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.values_to_labels_association_table ALTER COLUMN id SET DEFAULT nextval('public.values_to_labels_association_table_id_seq'::regclass);
 
 
 --
@@ -697,12 +511,6 @@ SELECT pg_catalog.setval('public.comments_id_seq', 1, false);
 SELECT pg_catalog.setval('public.computed_points_id_seq', 1, false);
 
 
---
--- Name: computed_points_to_labels_association_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.computed_points_to_labels_association_table_id_seq', 1, false);
-
 
 --
 -- Name: curves_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
@@ -711,11 +519,6 @@ SELECT pg_catalog.setval('public.computed_points_to_labels_association_table_id_
 SELECT pg_catalog.setval('public.curves_id_seq', 4, true);
 
 
---
--- Name: curves_to_labels_association_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.curves_to_labels_association_table_id_seq', 1, false);
 
 
 --
@@ -732,12 +535,6 @@ SELECT pg_catalog.setval('public.labels_id_seq', 3, true);
 SELECT pg_catalog.setval('public.landmarks_id_seq', 9, true);
 
 
---
--- Name: landmarks_to_labels_association_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.landmarks_to_labels_association_table_id_seq', 1, false);
-
 
 --
 -- Name: measured_bodies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
@@ -747,24 +544,10 @@ SELECT pg_catalog.setval('public.measured_bodies_id_seq', 1, true);
 
 
 --
--- Name: measured_bodies_to_labels_association_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.measured_bodies_to_labels_association_table_id_seq', 3, true);
-
-
---
 -- Name: values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.values_id_seq', 4, true);
-
-
---
--- Name: values_to_labels_association_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.values_to_labels_association_table_id_seq', 1, false);
 
 
 --
@@ -799,13 +582,6 @@ ALTER TABLE ONLY public.computed_points
     ADD CONSTRAINT computed_points_pkey PRIMARY KEY (id);
 
 
---
--- Name: computed_points_to_labels_association_table computed_points_to_labels_association_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points_to_labels_association_table
-    ADD CONSTRAINT computed_points_to_labels_association_table_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: curves curves_name_body_key; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -822,13 +598,6 @@ ALTER TABLE ONLY public.curves
 ALTER TABLE ONLY public.curves
     ADD CONSTRAINT curves_pkey PRIMARY KEY (id);
 
-
---
--- Name: curves_to_labels_association_table curves_to_labels_association_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves_to_labels_association_table
-    ADD CONSTRAINT curves_to_labels_association_table_pkey PRIMARY KEY (id);
 
 
 --
@@ -863,13 +632,6 @@ ALTER TABLE ONLY public.landmarks
     ADD CONSTRAINT landmarks_pkey PRIMARY KEY (id);
 
 
---
--- Name: landmarks_to_labels_association_table landmarks_to_labels_association_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks_to_labels_association_table
-    ADD CONSTRAINT landmarks_to_labels_association_table_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: measured_bodies measured_bodies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -879,13 +641,9 @@ ALTER TABLE ONLY public.measured_bodies
     ADD CONSTRAINT measured_bodies_pkey PRIMARY KEY (id);
 
 
---
--- Name: measured_bodies_to_labels_association_table measured_bodies_to_labels_association_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
-ALTER TABLE ONLY public.measured_bodies_to_labels_association_table
-    ADD CONSTRAINT measured_bodies_to_labels_association_table_pkey PRIMARY KEY (id);
-
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_pkey PRIMARY KEY (id);
 
 --
 -- Name: values values_name_body_key; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -904,54 +662,6 @@ ALTER TABLE ONLY public."values"
 
 
 --
--- Name: values_to_labels_association_table values_to_labels_association_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.values_to_labels_association_table
-    ADD CONSTRAINT values_to_labels_association_table_pkey PRIMARY KEY (id);
-
-
---
--- Name: comments comments_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
-
-
---
--- Name: comments comments_computed_point_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_computed_point_fkey FOREIGN KEY (computed_point) REFERENCES public.computed_points(id);
-
-
---
--- Name: comments comments_curve_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_curve_fkey FOREIGN KEY (curve) REFERENCES public.curves(id);
-
-
---
--- Name: comments comments_landmark_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_landmark_fkey FOREIGN KEY (landmark) REFERENCES public.landmarks(id);
-
-
---
--- Name: comments comments_value_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_value_fkey FOREIGN KEY (value) REFERENCES public."values"(id);
-
-
---
 -- Name: computed_points computed_points_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -959,20 +669,6 @@ ALTER TABLE ONLY public.computed_points
     ADD CONSTRAINT computed_points_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
 
 
---
--- Name: computed_points_to_labels_association_table computed_points_to_labels_association_t_computed_points_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points_to_labels_association_table
-    ADD CONSTRAINT computed_points_to_labels_association_t_computed_points_id_fkey FOREIGN KEY (computed_points_id) REFERENCES public.computed_points(id);
-
-
---
--- Name: computed_points_to_labels_association_table computed_points_to_labels_association_table_labels_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points_to_labels_association_table
-    ADD CONSTRAINT computed_points_to_labels_association_table_labels_id_fkey FOREIGN KEY (labels_id) REFERENCES public.labels(id);
 
 
 --
@@ -983,37 +679,6 @@ ALTER TABLE ONLY public.curves
     ADD CONSTRAINT curves_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
 
 
---
--- Name: curves_to_labels_association_table curves_to_labels_association_table_curves_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves_to_labels_association_table
-    ADD CONSTRAINT curves_to_labels_association_table_curves_id_fkey FOREIGN KEY (curves_id) REFERENCES public.curves(id);
-
-
---
--- Name: curves_to_labels_association_table curves_to_labels_association_table_labels_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves_to_labels_association_table
-    ADD CONSTRAINT curves_to_labels_association_table_labels_id_fkey FOREIGN KEY (labels_id) REFERENCES public.labels(id);
-
-
---
--- Name: feedback_association feedback_association_labels_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.feedback_association
-    ADD CONSTRAINT feedback_association_labels_id_fkey FOREIGN KEY (labels_id) REFERENCES public.labels(id);
-
-
---
--- Name: feedback_association feedback_association_measured_bodies_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.feedback_association
-    ADD CONSTRAINT feedback_association_measured_bodies_id_fkey FOREIGN KEY (measured_bodies_id) REFERENCES public.measured_bodies(id);
-
 
 --
 -- Name: landmarks landmarks_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
@@ -1022,21 +687,6 @@ ALTER TABLE ONLY public.feedback_association
 ALTER TABLE ONLY public.landmarks
     ADD CONSTRAINT landmarks_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
 
-
---
--- Name: landmarks_to_labels_association_table landmarks_to_labels_association_table_labels_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks_to_labels_association_table
-    ADD CONSTRAINT landmarks_to_labels_association_table_labels_id_fkey FOREIGN KEY (labels_id) REFERENCES public.labels(id);
-
-
---
--- Name: landmarks_to_labels_association_table landmarks_to_labels_association_table_landmarks_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks_to_labels_association_table
-    ADD CONSTRAINT landmarks_to_labels_association_table_landmarks_id_fkey FOREIGN KEY (landmarks_id) REFERENCES public.landmarks(id);
 
 
 --
@@ -1048,22 +698,6 @@ ALTER TABLE ONLY public.measured_bodies
 
 
 --
--- Name: measured_bodies_to_labels_association_table measured_bodies_to_labels_association_t_measured_bodies_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.measured_bodies_to_labels_association_table
-    ADD CONSTRAINT measured_bodies_to_labels_association_t_measured_bodies_id_fkey FOREIGN KEY (measured_bodies_id) REFERENCES public.measured_bodies(id);
-
-
---
--- Name: measured_bodies_to_labels_association_table measured_bodies_to_labels_association_table_labels_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.measured_bodies_to_labels_association_table
-    ADD CONSTRAINT measured_bodies_to_labels_association_table_labels_id_fkey FOREIGN KEY (labels_id) REFERENCES public.labels(id);
-
-
---
 -- Name: values values_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1071,21 +705,28 @@ ALTER TABLE ONLY public."values"
     ADD CONSTRAINT values_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
 
 
---
--- Name: values_to_labels_association_table values_to_labels_association_table_labels_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.values_to_labels_association_table
-    ADD CONSTRAINT values_to_labels_association_table_labels_id_fkey FOREIGN KEY (labels_id) REFERENCES public.labels(id);
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
 
 
---
--- Name: values_to_labels_association_table values_to_labels_association_table_values_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_landmark_fkey FOREIGN KEY (landmark) REFERENCES public.landmarks(id);
 
-ALTER TABLE ONLY public.values_to_labels_association_table
-    ADD CONSTRAINT values_to_labels_association_table_values_id_fkey FOREIGN KEY (values_id) REFERENCES public."values"(id);
 
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_computed_point_fkey FOREIGN KEY (computed_point) REFERENCES public.computed_points(id);
+
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_curve_fkey FOREIGN KEY (curve) REFERENCES public.curves(id);
+
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_values_fkey FOREIGN KEY (value) REFERENCES public."values"(id);
+
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_comments_fkey FOREIGN KEY (comment) REFERENCES public.comments(id);
+
+ALTER TABLE ONLY public.feedback_associations
+    ADD CONSTRAINT feedback_associations_labels_fkey FOREIGN KEY (label) REFERENCES public.labels(id);
 
 --
 -- Name: postgraphile_watch_ddl; Type: EVENT TRIGGER; Schema: -; Owner: postgres
