@@ -1,0 +1,17 @@
+mutation{
+  createFeedbackAssociation(input:{feedbackAssociation:{id:8, label:4, body: 1}}) {
+		feedbackAssociation {
+      id
+      labelByLabel {
+        id
+        name
+      }
+      measuredBodyByBody {
+        id
+        name
+      }
+    }
+  }
+}
+
+

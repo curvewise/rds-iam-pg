@@ -1,0 +1,10 @@
+query MyQuery {
+  allLabels {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}

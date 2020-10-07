@@ -1,0 +1,12 @@
+query MyQuery {
+  allBatches {
+    nodes {
+      id
+      name
+      units
+      referenceFrameUp
+      referenceFrameLook
+    }
+  }
+}
+

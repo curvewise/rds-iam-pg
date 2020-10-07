@@ -1,0 +1,40 @@
+query MyQuery {
+  allBatches(condition: {name: "2020-09-19"}) {
+    nodes {
+      measuredBodiesByBatch(condition: {id: 1}) {
+        nodes {
+          id
+          curvesByBody {
+            nodes {
+              name
+              vertices
+            }
+          }
+        }
+      }
+      name
+    }
+  }
+}
+
+
+query MyQuery {
+  allBatches(condition: {name: "2020-09-19"}) {
+    nodes {
+      measuredBodiesByBatch(condition: {id: 1}) {
+        nodes {
+          id
+          measuredBodiesToLabelsAssociationTablesByMeasuredBodiesId {
+            nodes{
+              labelByLabelsId {
+                name
+              }
+            }
+          }
+        }
+      }
+      name
+    }
+  }
+}
+

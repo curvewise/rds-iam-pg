@@ -1,0 +1,44 @@
+query MyQuery {
+  foo:allLabels(condition: {name: "foo"}) {
+    edges {
+      node {
+        id
+        name
+        feedbackAssociationsByLabel {
+          edges {
+            node {
+              id
+              measuredBodyByBody {
+                id
+                name
+                s3Path
+                s3Bucket
+              }
+            }
+          }
+        } 
+      }
+    }
+  }
+  bar:allLabels(condition: {name: "bar"}) {
+    edges {
+      node {
+        id
+        name
+        feedbackAssociationsByLabel {
+          edges {
+            node {
+              id
+              measuredBodyByBody {
+                id
+                name
+                s3Path
+                s3Bucket
+              }
+            }
+          }
+        } 
+      }
+    }
+  }  
+}

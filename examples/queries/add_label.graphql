@@ -1,0 +1,10 @@
+mutation{
+	createLabel(input:{label:{name:"bif"}}){
+    label {
+      id
+      name
+    }
+  }
+}
+
+
