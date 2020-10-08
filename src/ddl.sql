@@ -1,9 +1,3 @@
-drop schema public cascade;
-drop schema postgraphile_watch cascade;
-
-create schema public;
-create schema postgraphile_watch;
-
 --
 -- PostgreSQL database dump
 --
@@ -28,15 +22,6 @@ SET row_security = off;
 
 COMMENT ON DATABASE postgres IS 'default administrative connection database';
 
-
---
--- Name: postgraphile_watch; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA postgraphile_watch;
-
-
-ALTER SCHEMA postgraphile_watch OWNER TO postgres;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
@@ -402,6 +387,8 @@ ALTER TABLE public.values_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.values_id_seq OWNED BY public."values".id;
 
+--feedback_assocations table
+
 
 CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
@@ -428,6 +415,86 @@ ALTER SEQUENCE public.feedback_associations_id_seq OWNED BY public.feedback_asso
 ALTER TABLE ONLY public.feedback_associations ALTER COLUMN id SET DEFAULT nextval('public.feedback_associations_id_seq'::regclass);
 
 SELECT pg_catalog.setval('public.feedback_associations_id_seq', 1, false);
+
+-- measured_body_views
+
+CREATE TABLE public.measured_body_views (
+  id integer NOT NULL,
+  version integer,
+  is_perspective boolean,
+  PRIMARY KEY(id)
+);
+
+
+CREATE SEQUENCE public.measured_body_views_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.measured_body_views_id_seq OWNED BY public.measured_body_views.id;
+
+SELECT pg_catalog.setval('public.measured_body_views_id_seq', 1, false);
+
+
+-- measurement_views
+
+CREATE TABLE public.measurement_views (
+  id integer NOT NULL,
+  name VARCHAR(50),
+  index integer,
+  measured_body_views_id integer,
+  PRIMARY KEY(id),
+  CONSTRAINT fk_measured_body_views
+    FOREIGN KEY(measured_body_views_id) 
+    REFERENCES public.measured_body_views(id)
+);
+
+
+CREATE SEQUENCE public.measurement_views_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.measurement_views_id_seq OWNED BY public.measurement_views.id;
+
+SELECT pg_catalog.setval('public.measurement_views_id_seq', 1, false);
+
+
+-- body_views table
+
+CREATE TABLE public.body_views (
+  id integer NOT NULL,
+  position double precision[3],
+  target double precision[3],
+  zoom real,
+  measurement_views_id integer,
+  CONSTRAINT body_views_position_check CHECK (array_length(position, 1) = 3),
+  CONSTRAINT body_views_target_check CHECK (array_length(target, 1) = 3),
+  PRIMARY KEY(id),
+  CONSTRAINT fk_measurement_views_id
+    FOREIGN KEY(measurement_views_id) 
+    REFERENCES public.measurement_views(id)
+);
+
+CREATE SEQUENCE public.body_views_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.body_views_id_seq OWNED BY public.body_views.id;
+
+SELECT pg_catalog.setval('public.body_views_id_seq', 1, false);
+
+ALTER TABLE ONLY public.body_views ALTER COLUMN id SET DEFAULT nextval('public.body_views_id_seq'::regclass);
 
 
 --
