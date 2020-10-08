@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "load-seed-data": "psql postgresql://postgres:postgres@localhost:5432/postgres -f src/reset.sql -f src/ddl.sql src/seed_data.sql && node lib/load-seed-data.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,8 @@
   },
   "engines": {
     "node": "12.9.1"
+  },
+  "devDependencies": {
+    "pg": "^8.4.0"
   }
 }
