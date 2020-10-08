@@ -5,7 +5,7 @@ const app = express();
 
 app.use(
   postgraphile(
-    process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/postgres",
+    process.env.DATABASE_URL,
     "public",
     {
       watchPg: true,

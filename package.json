@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "load-seed-data": "psql postgresql://postgres:postgres@localhost:5432/postgres -f src/reset.sql -f src/ddl.sql -f src/seed_data.sql && node lib/load-seed-data.js"
+    "load-seed-data": "psql $DATABASE_URL -f src/reset.sql -f src/ddl.sql -f src/seed_data.sql && node lib/load-seed-data.js"
   },
   "author": "",
   "license": "ISC",
