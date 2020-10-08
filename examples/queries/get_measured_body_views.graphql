@@ -1,0 +1,30 @@
+query {
+  allMeasuredBodyViews {
+    edges {
+      node {
+        id
+        version
+        isPerspective
+        measurementViewsByMeasuredBodyViewsId {
+          edges {
+            node {
+              id
+              name
+              index
+              bodyViewsByMeasurementViewsId {
+                edges {
+                  node {
+                    id
+                    position
+                    target
+                    zoom
+                  }
+                }
+              }
+            }
+          }
+        } 
+      }
+    }
+  }
+}
