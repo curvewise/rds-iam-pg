@@ -1,9 +1,10 @@
 query GetBodiesForABatch {
   allBatches(condition: {name: "2020-09-19"}) {
     nodes {
-      measuredBodiesByBatch {
+      measuredBodiesByBatchId {
         nodes {
           id
+					name
         }
       }
       name

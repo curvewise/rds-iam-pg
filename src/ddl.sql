@@ -52,16 +52,12 @@ CREATE TABLE public.batches (
     reference_frame_up integer[],
     reference_frame_look integer[],
     CONSTRAINT batches_reference_frame_look_check CHECK ((array_length(reference_frame_look, 1) = 3)),
-    CONSTRAINT batches_reference_frame_up_check CHECK ((array_length(reference_frame_up, 1) = 3))
+    CONSTRAINT batches_reference_frame_up_check CHECK ((array_length(reference_frame_up, 1) = 3)),
+    PRIMARY KEY(id)
 );
 
 
 ALTER TABLE public.batches OWNER TO postgres;
-
---
--- Name: batches_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
 CREATE SEQUENCE public.batches_id_seq
     AS integer
     START WITH 1
@@ -69,200 +65,10 @@ CREATE SEQUENCE public.batches_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-
 ALTER TABLE public.batches_id_seq OWNER TO postgres;
-
---
--- Name: batches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
 ALTER SEQUENCE public.batches_id_seq OWNED BY public.batches.id;
-
-
---
--- Name: comments; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.comments (
-    id integer NOT NULL,
-    content text
-);
-
-
-ALTER TABLE public.comments OWNER TO postgres;
-
---
--- Name: comments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.comments_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.comments_id_seq OWNER TO postgres;
-
---
--- Name: comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
-
-
---
--- Name: computed_points; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.computed_points (
-    vertex double precision[],
-    id integer NOT NULL,
-    name character varying(50),
-    body integer NOT NULL,
-    CONSTRAINT computed_points_vertex_check CHECK ((array_length(vertex, 1) = 3))
-);
-
-
-ALTER TABLE public.computed_points OWNER TO postgres;
-
---
--- Name: computed_points_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.computed_points_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.computed_points_id_seq OWNER TO postgres;
-
---
--- Name: computed_points_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.computed_points_id_seq OWNED BY public.computed_points.id;
-
-
-
-
---
--- Name: curves; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.curves (
-    id integer NOT NULL,
-    name character varying(50),
-    is_closed boolean,
-    vertices double precision[],
-    body integer NOT NULL,
-    CONSTRAINT curves_vertices_check CHECK ((array_length(vertices, 2) = 3))
-);
-
-
-ALTER TABLE public.curves OWNER TO postgres;
-
---
--- Name: curves_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.curves_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.curves_id_seq OWNER TO postgres;
-
---
--- Name: curves_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.curves_id_seq OWNED BY public.curves.id;
-
-
-
---
--- Name: labels; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.labels (
-    id integer NOT NULL,
-    name character varying(50)
-);
-
-
-ALTER TABLE public.labels OWNER TO postgres;
-
---
--- Name: labels_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.labels_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.labels_id_seq OWNER TO postgres;
-
---
--- Name: labels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.labels_id_seq OWNED BY public.labels.id;
-
-
---
--- Name: landmarks; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.landmarks (
-    vertex double precision[],
-    id integer NOT NULL,
-    landmark_name character varying(50),
-    landmark_set_name character varying(50),
-    body integer NOT NULL,
-    CONSTRAINT landmarks_vertex_check CHECK ((array_length(vertex, 1) = 3))
-);
-
-
-ALTER TABLE public.landmarks OWNER TO postgres;
-
---
--- Name: landmarks_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.landmarks_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.landmarks_id_seq OWNER TO postgres;
-
---
--- Name: landmarks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.landmarks_id_seq OWNED BY public.landmarks.id;
-
+SELECT pg_catalog.setval('public.batches_id_seq', 1, true);
+ALTER TABLE ONLY public.batches ALTER COLUMN id SET DEFAULT nextval('public.batches_id_seq'::regclass);
 
 --
 -- Name: measured_bodies; Type: TABLE; Schema: public; Owner: postgres
@@ -276,17 +82,68 @@ CREATE TABLE public.measured_bodies (
     tape_width double precision,
     gender character(1),
     pose character varying(50),
-    batch integer NOT NULL
+    batch_id integer NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT measured_bodies_batch_fkey FOREIGN KEY (batch_id) REFERENCES public.batches(id)
 );
 
 
 ALTER TABLE public.measured_bodies OWNER TO postgres;
-
---
--- Name: measured_bodies_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
 CREATE SEQUENCE public.measured_bodies_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY public.measured_bodies ALTER COLUMN id SET DEFAULT nextval('public.measured_bodies_id_seq'::regclass);
+ALTER TABLE public.measured_bodies_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.measured_bodies_id_seq OWNED BY public.measured_bodies.id;
+SELECT pg_catalog.setval('public.measured_bodies_id_seq', 1, true);
+
+
+--
+-- Name: comments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.comments (
+    id integer NOT NULL,
+    content text,
+    PRIMARY KEY(id)
+);
+
+
+ALTER TABLE public.comments OWNER TO postgres;
+CREATE SEQUENCE public.comments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE public.comments_id_seq OWNER TO postgres;
+SELECT pg_catalog.setval('public.comments_id_seq', 1, false);
+ALTER TABLE ONLY public.comments ALTER COLUMN id SET DEFAULT nextval('public.comments_id_seq'::regclass);
+ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
+
+
+--
+-- Name: computed_points; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.computed_points (
+    vertex double precision[],
+    id integer NOT NULL,
+    name character varying(50),
+    body_id integer NOT NULL,
+    CONSTRAINT computed_points_vertex_check CHECK ((array_length(vertex, 1) = 3)),
+    PRIMARY KEY(id),
+    CONSTRAINT computed_points_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
+    CONSTRAINT computed_points_name_body_key UNIQUE (name, body_id)
+);
+
+
+CREATE SEQUENCE public.computed_points_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -295,13 +152,101 @@ CREATE SEQUENCE public.measured_bodies_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.measured_bodies_id_seq OWNER TO postgres;
+ALTER TABLE public.computed_points OWNER TO postgres;
+ALTER TABLE public.computed_points_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.computed_points_id_seq OWNED BY public.computed_points.id;
+SELECT pg_catalog.setval('public.computed_points_id_seq', 1, false);
+ALTER TABLE ONLY public.computed_points ALTER COLUMN id SET DEFAULT nextval('public.computed_points_id_seq'::regclass);
+
+
+
 
 --
--- Name: measured_bodies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: curves; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.measured_bodies_id_seq OWNED BY public.measured_bodies.id;
+CREATE TABLE public.curves (
+    id integer NOT NULL,
+    name character varying(50),
+    is_closed boolean,
+    vertices double precision[],
+    body_id integer NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT curves_vertices_check CHECK ((array_length(vertices, 2) = 3)),
+    CONSTRAINT curves_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
+    CONSTRAINT curves_name_body_key UNIQUE (name, body_id)
+);
+
+
+ALTER TABLE public.curves OWNER TO postgres;
+CREATE SEQUENCE public.curves_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY public.curves ALTER COLUMN id SET DEFAULT nextval('public.curves_id_seq'::regclass);
+ALTER TABLE public.curves_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.curves_id_seq OWNED BY public.curves.id;
+SELECT pg_catalog.setval('public.curves_id_seq', 4, true);
+
+
+--
+-- Name: labels; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.labels (
+    id integer NOT NULL,
+    name character varying(50),
+    PRIMARY KEY(id),
+    CONSTRAINT labels_name_key UNIQUE (name)
+);
+
+
+ALTER TABLE public.labels OWNER TO postgres;
+CREATE SEQUENCE public.labels_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY public.labels ALTER COLUMN id SET DEFAULT nextval('public.labels_id_seq'::regclass);
+ALTER TABLE public.labels_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.labels_id_seq OWNED BY public.labels.id;
+SELECT pg_catalog.setval('public.labels_id_seq', 3, true);
+
+--
+-- Name: landmarks; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.landmarks (
+    vertex double precision[],
+    id integer NOT NULL,
+    landmark_name character varying(50),
+    landmark_set_name character varying(50),
+    body_id integer NOT NULL,
+    CONSTRAINT landmarks_vertex_check CHECK ((array_length(vertex, 1) = 3)),
+    PRIMARY KEY(id),
+    CONSTRAINT landmarks_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
+    CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, body_id)
+);
+
+
+ALTER TABLE public.landmarks OWNER TO postgres;
+CREATE SEQUENCE public.landmarks_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY public.landmarks ALTER COLUMN id SET DEFAULT nextval('public.landmarks_id_seq'::regclass);
+ALTER TABLE public.landmarks_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.landmarks_id_seq OWNED BY public.landmarks.id;
+SELECT pg_catalog.setval('public.landmarks_id_seq', 9, true);
+
 
 
 
@@ -314,16 +259,14 @@ CREATE TABLE public."values" (
     name character varying(50),
     value double precision,
     units character varying(2),
-    body integer NOT NULL
+    body_id integer NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT values_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
+    CONSTRAINT values_name_body_key UNIQUE (name, body_id)
 );
 
 
 ALTER TABLE public."values" OWNER TO postgres;
-
---
--- Name: values_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
 CREATE SEQUENCE public.values_id_seq
     AS integer
     START WITH 1
@@ -331,28 +274,33 @@ CREATE SEQUENCE public.values_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-
+ALTER TABLE ONLY public."values" ALTER COLUMN id SET DEFAULT nextval('public.values_id_seq'::regclass);
 ALTER TABLE public.values_id_seq OWNER TO postgres;
-
---
--- Name: values_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
 ALTER SEQUENCE public.values_id_seq OWNED BY public."values".id;
+SELECT pg_catalog.setval('public.values_id_seq', 4, true);
+
+
 
 --feedback_assocations table
 
 
 CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
-    body integer,
-    landmark integer,
-    computed_point integer,
-    value integer,
-    curve integer,
-    comment integer,
-    label integer
+    body_id integer,
+    landmark_id integer,
+    computed_point_id integer,
+    value_id integer,
+    curve_id integer,
+    comment_id integer,
+    label_id integer,
+    PRIMARY KEY(id),
+    CONSTRAINT feedback_associations_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
+    CONSTRAINT feedback_associations_landmark_fkey FOREIGN KEY (landmark_id) REFERENCES public.landmarks(id),
+    CONSTRAINT feedback_associations_computed_point_fkey FOREIGN KEY (computed_point_id) REFERENCES public.computed_points(id),
+    CONSTRAINT feedback_associations_curve_fkey FOREIGN KEY (curve_id) REFERENCES public.curves(id),
+    CONSTRAINT feedback_associations_values_fkey FOREIGN KEY (value_id) REFERENCES public."values"(id),
+    CONSTRAINT feedback_associations_comments_fkey FOREIGN KEY (comment_id) REFERENCES public.comments(id),
+    CONSTRAINT feedback_associations_labels_fkey FOREIGN KEY (label_id) REFERENCES public.labels(id)
 );
 
 
@@ -365,10 +313,11 @@ CREATE SEQUENCE public.feedback_associations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.feedback_associations_id_seq OWNED BY public.feedback_associations.id;
-
 ALTER TABLE ONLY public.feedback_associations ALTER COLUMN id SET DEFAULT nextval('public.feedback_associations_id_seq'::regclass);
-
 SELECT pg_catalog.setval('public.feedback_associations_id_seq', 1, false);
+
+
+
 
 -- measured_body_views
 
@@ -387,9 +336,7 @@ CREATE SEQUENCE public.measured_body_views_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
 ALTER SEQUENCE public.measured_body_views_id_seq OWNED BY public.measured_body_views.id;
-
 SELECT pg_catalog.setval('public.measured_body_views_id_seq', 1, false);
 
 
@@ -414,9 +361,7 @@ CREATE SEQUENCE public.measurement_views_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
 ALTER SEQUENCE public.measurement_views_id_seq OWNED BY public.measurement_views.id;
-
 SELECT pg_catalog.setval('public.measurement_views_id_seq', 1, false);
 
 
@@ -445,308 +390,7 @@ CREATE SEQUENCE public.body_views_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.body_views_id_seq OWNED BY public.body_views.id;
-
 SELECT pg_catalog.setval('public.body_views_id_seq', 1, false);
-
 ALTER TABLE ONLY public.body_views ALTER COLUMN id SET DEFAULT nextval('public.body_views_id_seq'::regclass);
-
-
---
--- Name: batches id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.batches ALTER COLUMN id SET DEFAULT nextval('public.batches_id_seq'::regclass);
-
-
---
--- Name: comments id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments ALTER COLUMN id SET DEFAULT nextval('public.comments_id_seq'::regclass);
-
-
---
--- Name: computed_points id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points ALTER COLUMN id SET DEFAULT nextval('public.computed_points_id_seq'::regclass);
-
-
-
---
--- Name: curves id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves ALTER COLUMN id SET DEFAULT nextval('public.curves_id_seq'::regclass);
-
-
---
--- Name: labels id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.labels ALTER COLUMN id SET DEFAULT nextval('public.labels_id_seq'::regclass);
-
-
---
--- Name: landmarks id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks ALTER COLUMN id SET DEFAULT nextval('public.landmarks_id_seq'::regclass);
-
-
-
---
--- Name: measured_bodies id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.measured_bodies ALTER COLUMN id SET DEFAULT nextval('public.measured_bodies_id_seq'::regclass);
-
-
-
---
--- Name: values id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."values" ALTER COLUMN id SET DEFAULT nextval('public.values_id_seq'::regclass);
-
-
-
---
--- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.batches_id_seq', 1, true);
-
-
---
--- Name: comments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.comments_id_seq', 1, false);
-
-
---
--- Name: computed_points_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.computed_points_id_seq', 1, false);
-
-
-
---
--- Name: curves_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.curves_id_seq', 4, true);
-
-
-
-
---
--- Name: labels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.labels_id_seq', 3, true);
-
-
---
--- Name: landmarks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.landmarks_id_seq', 9, true);
-
-
-
---
--- Name: measured_bodies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.measured_bodies_id_seq', 1, true);
-
-
---
--- Name: values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.values_id_seq', 4, true);
-
-
---
--- Name: batches batches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.batches
-    ADD CONSTRAINT batches_pkey PRIMARY KEY (id);
-
-
---
--- Name: comments comments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_pkey PRIMARY KEY (id);
-
-
---
--- Name: computed_points computed_points_name_body_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points
-    ADD CONSTRAINT computed_points_name_body_key UNIQUE (name, body);
-
-
---
--- Name: computed_points computed_points_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points
-    ADD CONSTRAINT computed_points_pkey PRIMARY KEY (id);
-
-
-
---
--- Name: curves curves_name_body_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves
-    ADD CONSTRAINT curves_name_body_key UNIQUE (name, body);
-
-
---
--- Name: curves curves_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves
-    ADD CONSTRAINT curves_pkey PRIMARY KEY (id);
-
-
-
---
--- Name: labels labels_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.labels
-    ADD CONSTRAINT labels_name_key UNIQUE (name);
-
-
---
--- Name: labels labels_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.labels
-    ADD CONSTRAINT labels_pkey PRIMARY KEY (id);
-
-
---
--- Name: landmarks landmarks_landmark_name_landmark_set_name_body_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks
-    ADD CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, body);
-
-
---
--- Name: landmarks landmarks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks
-    ADD CONSTRAINT landmarks_pkey PRIMARY KEY (id);
-
-
-
---
--- Name: measured_bodies measured_bodies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.measured_bodies
-    ADD CONSTRAINT measured_bodies_pkey PRIMARY KEY (id);
-
-
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_pkey PRIMARY KEY (id);
-
---
--- Name: values values_name_body_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."values"
-    ADD CONSTRAINT values_name_body_key UNIQUE (name, body);
-
-
---
--- Name: values values_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."values"
-    ADD CONSTRAINT values_pkey PRIMARY KEY (id);
-
-
---
--- Name: computed_points computed_points_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.computed_points
-    ADD CONSTRAINT computed_points_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
-
-
-
-
---
--- Name: curves curves_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.curves
-    ADD CONSTRAINT curves_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
-
-
-
---
--- Name: landmarks landmarks_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.landmarks
-    ADD CONSTRAINT landmarks_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
-
-
-
---
--- Name: measured_bodies measured_bodies_batch_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.measured_bodies
-    ADD CONSTRAINT measured_bodies_batch_fkey FOREIGN KEY (batch) REFERENCES public.batches(id);
-
-
---
--- Name: values values_body_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."values"
-    ADD CONSTRAINT values_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
-
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_body_fkey FOREIGN KEY (body) REFERENCES public.measured_bodies(id);
-
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_landmark_fkey FOREIGN KEY (landmark) REFERENCES public.landmarks(id);
-
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_computed_point_fkey FOREIGN KEY (computed_point) REFERENCES public.computed_points(id);
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_curve_fkey FOREIGN KEY (curve) REFERENCES public.curves(id);
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_values_fkey FOREIGN KEY (value) REFERENCES public."values"(id);
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_comments_fkey FOREIGN KEY (comment) REFERENCES public.comments(id);
-
-ALTER TABLE ONLY public.feedback_associations
-    ADD CONSTRAINT feedback_associations_labels_fkey FOREIGN KEY (label) REFERENCES public.labels(id);
 
 

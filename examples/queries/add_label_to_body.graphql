@@ -1,12 +1,12 @@
 mutation{
-  createFeedbackAssociation(input:{feedbackAssociation:{id:8, label:4, body: 1}}) {
+  createFeedbackAssociation(input:{feedbackAssociation:{id:8, labelId:4, bodyId: 1}}) {
 		feedbackAssociation {
       id
-      labelByLabel {
+      labelByLabelId {
         id
         name
       }
-      measuredBodyByBody {
+      measuredBodyByBodyId {
         id
         name
       }

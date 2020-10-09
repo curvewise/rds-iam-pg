@@ -4,11 +4,11 @@ query MyQuery {
       node {
         id
         name
-        feedbackAssociationsByLabel {
+        feedbackAssociationsByLabelId {
           edges {
             node {
               id
-              measuredBodyByBody {
+              measuredBodyByBodyId {
                 id
                 name
                 s3Path
@@ -25,11 +25,11 @@ query MyQuery {
       node {
         id
         name
-        feedbackAssociationsByLabel {
+        feedbackAssociationsByLabelId {
           edges {
             node {
               id
-              measuredBodyByBody {
+              measuredBodyByBodyId {
                 id
                 name
                 s3Path
