@@ -1,7 +1,12 @@
 const express = require("express");
 const { postgraphile } = require("postgraphile");
+const cors = require('cors')
 
 const app = express();
+
+app.get("/", (req, res) => res.send('Goldilocks graphql server'))
+
+app.use(cors())
 
 app.use(
   postgraphile(
