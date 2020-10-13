@@ -1,13 +1,36 @@
 query GetBodiesForABatch {
-  allBatches(condition: {name: "2020-09-19"}) {
-    nodes {
-      measuredBodiesByBatchId {
-        nodes {
-          id
-					name
+  allBatches(condition: { name: "2020-09-19" }) {
+    edges {
+      node {
+        id
+        name
+        subjectsByBatchId {
+          edges {
+            node {
+              id
+              name
+              posesBySubjectId {
+                edges {
+                  node {
+                    id
+                    name
+                    measuredGeometriesByPoseId {
+                      edges {
+                        node {
+                          id
+                          s3Path
+                          s3Bucket
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
-      name
     }
   }
 }

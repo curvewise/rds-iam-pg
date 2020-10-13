@@ -1,18 +1,15 @@
-query MyQuery {
-  allBatches(condition: {name: "2020-09-19"}) {
-    nodes {
-      measuredBodiesByBatchId(condition: {id: 1}) {
-        nodes {
-          id
-          curvesByBodyId {
-            nodes {
-              name
-              vertices
-            }
-          }
-        }
+query {
+  measuredGeometryById(id: 1) {
+    nodeId
+    name
+    s3Bucket
+    s3Path
+    version
+    curvesByMeasuredGeometryId {
+      nodes {
+        name
+        vertices
       }
-      name
     }
   }
 }

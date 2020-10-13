@@ -71,35 +71,85 @@ SELECT pg_catalog.setval('public.batches_id_seq', 1, true);
 ALTER TABLE ONLY public.batches ALTER COLUMN id SET DEFAULT nextval('public.batches_id_seq'::regclass);
 
 --
--- Name: measured_bodies; Type: TABLE; Schema: public; Owner: postgres
+-- Name: subjects; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.measured_bodies (
+CREATE TABLE public.subjects (
     id integer NOT NULL,
     name character varying(50),
-    s3_bucket character varying(50),
-    s3_path character varying(50),
-    tape_width double precision,
     gender character(1),
-    pose character varying(50),
     batch_id integer NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT measured_bodies_batch_fkey FOREIGN KEY (batch_id) REFERENCES public.batches(id)
+    CONSTRAINT subjects_batch_fkey FOREIGN KEY (batch_id) REFERENCES public.batches(id)
 );
 
 
-ALTER TABLE public.measured_bodies OWNER TO postgres;
-CREATE SEQUENCE public.measured_bodies_id_seq
+ALTER TABLE public.subjects OWNER TO postgres;
+CREATE SEQUENCE public.subjects_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER TABLE ONLY public.measured_bodies ALTER COLUMN id SET DEFAULT nextval('public.measured_bodies_id_seq'::regclass);
-ALTER TABLE public.measured_bodies_id_seq OWNER TO postgres;
-ALTER SEQUENCE public.measured_bodies_id_seq OWNED BY public.measured_bodies.id;
-SELECT pg_catalog.setval('public.measured_bodies_id_seq', 1, true);
+ALTER TABLE ONLY public.subjects ALTER COLUMN id SET DEFAULT nextval('public.subjects_id_seq'::regclass);
+ALTER TABLE public.subjects_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
+SELECT pg_catalog.setval('public.subjects_id_seq', 1, true);
+
+
+-- Pose
+
+
+CREATE TABLE public.poses (
+    id integer NOT NULL,
+    name character varying(50),
+    subject_id integer NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT poses_subjects_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects(id)
+);
+
+ALTER TABLE public.poses OWNER TO postgres;
+CREATE SEQUENCE public.poses_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY public.poses ALTER COLUMN id SET DEFAULT nextval('public.poses_id_seq'::regclass);
+ALTER TABLE public.poses_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.poses_id_seq OWNED BY public.poses.id;
+SELECT pg_catalog.setval('public.poses_id_seq', 1, true);
+
+
+-- measured_geometries
+
+
+CREATE TABLE public.measured_geometries (
+    id integer NOT NULL,
+    name character varying(50),
+    s3_bucket character varying(50) NOT NULL,
+    s3_path character varying(50) NOT NULL,
+    version integer NOT NULL,
+    pose_id integer NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT measured_geometries_poses_fkey FOREIGN KEY (pose_id) REFERENCES public.poses(id),
+    CONSTRAINT measured_geometries_unique_pose_version UNIQUE (pose_id, version)
+);
+
+ALTER TABLE public.measured_geometries OWNER TO postgres;
+CREATE SEQUENCE public.measured_geometries_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY public.measured_geometries ALTER COLUMN id SET DEFAULT nextval('public.measured_geometries_id_seq'::regclass);
+ALTER TABLE public.measured_geometries_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.measured_geometries_id_seq OWNED BY public.measured_geometries.id;
+SELECT pg_catalog.setval('public.measured_geometries_id_seq', 1, true);
 
 
 --
@@ -135,11 +185,11 @@ CREATE TABLE public.computed_points (
     vertex double precision[],
     id integer NOT NULL,
     name character varying(50),
-    body_id integer NOT NULL,
+    measured_geometry_id integer NOT NULL,
     CONSTRAINT computed_points_vertex_check CHECK ((array_length(vertex, 1) = 3)),
     PRIMARY KEY(id),
-    CONSTRAINT computed_points_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
-    CONSTRAINT computed_points_name_body_key UNIQUE (name, body_id)
+    CONSTRAINT computed_points_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries(id),
+    CONSTRAINT computed_points_name_body_key UNIQUE (name, measured_geometry_id)
 );
 
 
@@ -170,11 +220,12 @@ CREATE TABLE public.curves (
     name character varying(50),
     is_closed boolean,
     vertices double precision[],
-    body_id integer NOT NULL,
+    measured_geometry_id integer NOT NULL,
+    tape_width double precision,
     PRIMARY KEY(id),
     CONSTRAINT curves_vertices_check CHECK ((array_length(vertices, 2) = 3)),
-    CONSTRAINT curves_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
-    CONSTRAINT curves_name_body_key UNIQUE (name, body_id)
+    CONSTRAINT curves_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries(id),
+    CONSTRAINT curves_name_body_key UNIQUE (name, measured_geometry_id)
 );
 
 
@@ -226,11 +277,11 @@ CREATE TABLE public.landmarks (
     id integer NOT NULL,
     landmark_name character varying(50),
     landmark_set_name character varying(50),
-    body_id integer NOT NULL,
+    measured_geometry_id integer NOT NULL,
     CONSTRAINT landmarks_vertex_check CHECK ((array_length(vertex, 1) = 3)),
     PRIMARY KEY(id),
-    CONSTRAINT landmarks_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
-    CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, body_id)
+    CONSTRAINT landmarks_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries(id),
+    CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, measured_geometry_id)
 );
 
 
@@ -259,10 +310,10 @@ CREATE TABLE public."values" (
     name character varying(50),
     value double precision,
     units character varying(2),
-    body_id integer NOT NULL,
+    measured_geometry_id integer NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT values_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
-    CONSTRAINT values_name_body_key UNIQUE (name, body_id)
+    CONSTRAINT values_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries(id),
+    CONSTRAINT values_name_body_key UNIQUE (name, measured_geometry_id)
 );
 
 
@@ -286,7 +337,9 @@ SELECT pg_catalog.setval('public.values_id_seq', 4, true);
 
 CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
-    body_id integer,
+    subject_id integer,
+    pose_id integer,
+    measured_geometry_id integer,
     landmark_id integer,
     computed_point_id integer,
     value_id integer,
@@ -294,7 +347,9 @@ CREATE TABLE public.feedback_associations (
     comment_id integer,
     label_id integer,
     PRIMARY KEY(id),
-    CONSTRAINT feedback_associations_body_fkey FOREIGN KEY (body_id) REFERENCES public.measured_bodies(id),
+    CONSTRAINT feedback_associations_subject_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects(id),
+    CONSTRAINT feedback_associations_pose_fkey FOREIGN KEY (pose_id) REFERENCES public.poses(id),
+    CONSTRAINT feedback_associations_measured_geometry_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries(id),
     CONSTRAINT feedback_associations_landmark_fkey FOREIGN KEY (landmark_id) REFERENCES public.landmarks(id),
     CONSTRAINT feedback_associations_computed_point_fkey FOREIGN KEY (computed_point_id) REFERENCES public.computed_points(id),
     CONSTRAINT feedback_associations_curve_fkey FOREIGN KEY (curve_id) REFERENCES public.curves(id),

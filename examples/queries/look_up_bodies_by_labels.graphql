@@ -8,7 +8,7 @@ query MyQuery {
           edges {
             node {
               id
-              measuredBodyByBodyId {
+              measuredGeometryByMeasuredGeometryId {
                 id
                 name
                 s3Path
@@ -29,7 +29,7 @@ query MyQuery {
           edges {
             node {
               id
-              measuredBodyByBodyId {
+              measuredGeometryByMeasuredGeometryId {
                 id
                 name
                 s3Path

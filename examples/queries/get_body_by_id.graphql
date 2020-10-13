@@ -1,8 +1,9 @@
 query {
-  measuredBodyById(id:1){
+  measuredGeometryById(id:1){
     nodeId
     name
     s3Bucket
     s3Path
+    version
   }
 }
