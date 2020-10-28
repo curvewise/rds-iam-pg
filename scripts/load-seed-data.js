@@ -1,7 +1,11 @@
 const { Client } = require('pg')
+const Joi = require('joi')
 const anonymized_female_views = require('../common-assets/measured-body/anonymized_female_views.json')
+const { configSchema } = require('../src/config-schema')
 
-const client = new Client({connectionString: process.env.DATABASE_URL})
+const { databaseUrl } = Joi.attempt(require('config').util.toObject(), configSchema)
+
+const client = new Client({connectionString: databaseUrl})
 ;(async () => {
   await client.connect()
   const measured_body_views_id = 1;

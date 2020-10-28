@@ -1,6 +1,10 @@
 const express = require("express");
 const { postgraphile } = require("postgraphile");
 const cors = require('cors')
+const Joi = require('joi')
+const { configSchema } = require('./src/config-schema')
+
+const { databaseUrl } = Joi.attempt(require('config').util.toObject(), configSchema)
 
 const app = express();
 
@@ -10,7 +14,7 @@ app.use(cors())
 
 app.use(
   postgraphile(
-    process.env.DATABASE_URL,
+    databaseUrl,
     "public",
     {
       watchPg: true,

@@ -1,18 +1,22 @@
 {
   "name": "goldilocks-data-layer-postgraphile",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Data backend for goldie",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "load-seed-data": "psql $DATABASE_URL -f src/reset.sql -f src/ddl.sql -f src/seed_data.sql && node lib/load-seed-data.js"
+    "load-seed-data": "DATABASE_URL=$(node scripts/get-database-url.js) scripts/load-seed-data.sh"
   },
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "dependencies": {
+    "config": "^3.3.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "joi": "^17.3.0",
+    "js-yaml": "^3.14.0",
     "postgraphile": "^4.9.0"
   },
   "engines": {

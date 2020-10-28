@@ -1,0 +1,8 @@
+# To use the common RDS database:
+# databaseUrl: postgresql://postgres:...@goldilocks-dev4.c5pfza6ihb2z.us-east-1.rds.amazonaws.com:5432/postgres
+
+# To use a PostgreSQL database on OS X (Homebrew):
+# databaseUrl: postgresql://localhost:5432/goldie
+
+# To use a PostgreSQL database on Fedora:
+# databaseUrl: postgresql://postgres:postgres@localhost:5432/goldie
