@@ -1,10 +1,10 @@
-query GetBodiesForABatch {
-  allBatches(condition: { name: "2020-09-19" }) {
+query GetBodiesForADataset {
+  allDatasets(condition: { name: "2020-09-19" }) {
     edges {
       node {
         id
         name
-        subjectsByBatchId {
+        subjectsByDatasetId {
           edges {
             node {
               id

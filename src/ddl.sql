@@ -42,33 +42,33 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: batches; Type: TABLE; Schema: public; Owner: postgres
+-- Name: datasets; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.batches (
+CREATE TABLE public.datasets (
     id integer NOT NULL,
     name character varying(50),
     units character varying(2),
     reference_frame_up integer[],
     reference_frame_look integer[],
-    CONSTRAINT batches_reference_frame_look_check CHECK ((array_length(reference_frame_look, 1) = 3)),
-    CONSTRAINT batches_reference_frame_up_check CHECK ((array_length(reference_frame_up, 1) = 3)),
+    CONSTRAINT datasets_reference_frame_look_check CHECK ((array_length(reference_frame_look, 1) = 3)),
+    CONSTRAINT datasets_reference_frame_up_check CHECK ((array_length(reference_frame_up, 1) = 3)),
     PRIMARY KEY(id)
 );
 
 
-ALTER TABLE public.batches OWNER TO postgres;
-CREATE SEQUENCE public.batches_id_seq
+ALTER TABLE public.datasets OWNER TO postgres;
+CREATE SEQUENCE public.datasets_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER TABLE public.batches_id_seq OWNER TO postgres;
-ALTER SEQUENCE public.batches_id_seq OWNED BY public.batches.id;
-SELECT pg_catalog.setval('public.batches_id_seq', 1, true);
-ALTER TABLE ONLY public.batches ALTER COLUMN id SET DEFAULT nextval('public.batches_id_seq'::regclass);
+ALTER TABLE public.datasets_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.datasets_id_seq OWNED BY public.datasets.id;
+SELECT pg_catalog.setval('public.datasets_id_seq', 1, true);
+ALTER TABLE ONLY public.datasets ALTER COLUMN id SET DEFAULT nextval('public.datasets_id_seq'::regclass);
 
 --
 -- Name: subjects; Type: TABLE; Schema: public; Owner: postgres
@@ -78,9 +78,9 @@ CREATE TABLE public.subjects (
     id integer NOT NULL,
     name character varying(50),
     gender character(1),
-    batch_id integer NOT NULL,
+    dataset_id integer NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT subjects_batch_fkey FOREIGN KEY (batch_id) REFERENCES public.batches(id)
+    CONSTRAINT subjects_dataset_fkey FOREIGN KEY (dataset_id) REFERENCES public.datasets(id)
 );
 
 

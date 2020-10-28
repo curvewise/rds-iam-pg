@@ -1,8 +1,8 @@
 --
--- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: datasets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.batches (id, name, units, reference_frame_up, reference_frame_look) FROM stdin;
+COPY public.datasets (id, name, units, reference_frame_up, reference_frame_look) FROM stdin;
 1	2020-09-19	cm	{0,1,0}	{0,0,1}
 \.
 
@@ -10,7 +10,7 @@ COPY public.batches (id, name, units, reference_frame_up, reference_frame_look) 
 -- Data for Name: measured_bodies; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.subjects (id, name, gender, batch_id) FROM stdin;
+COPY public.subjects (id, name, gender, dataset_id) FROM stdin;
 1	subject1	F	1
 2	subject2	F	1
 3	subject3	F	1
