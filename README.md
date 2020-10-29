@@ -29,11 +29,6 @@ http://localhost:5000/graphiql
     createdb goldie
     ```
 
-2. Set `DATABASE_URL` in `.env`:
-    ```sh
-    DATABASE_URL=postgresql://localhost:5432/goldie
-    ```
-
 3. Initialize the database:
     ```sh
     npm run load-seed-data
