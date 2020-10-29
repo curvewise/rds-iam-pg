@@ -47,6 +47,19 @@ http://localhost:5000/graphiql
    npm run load-seed-data
    ```
 
+### Changing the schema
+
+Change the schema by creating the appropriate SQL tables and foreign key
+relationships. This is done in `src/ddl.sql`.
+
+Sample data exists and can be added in either of two places: SQL or
+JSON/JavaScript. The SQL is in `src/seed_data.sql` and the JavaScript is in
+`scripts/load-seed-data.js`.
+
+Apply them to your database by running `npm run load-seed-data`. If the
+server is running, it will take note of the changes and automatically expose
+new GraphQL endpoints.
+
 ## Deployment
 
 In deployed environments, you can configure the server using the environment
