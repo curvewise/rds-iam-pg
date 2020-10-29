@@ -1,0 +1,77 @@
+version: 2
+jobs:
+  test:
+    # Adapted from https://circleci.com/docs/2.0/databases/#postgresql-database-testing-example
+    docker:
+      - image: circleci/node:12
+        environment:
+          DATABASE_URL: postgresql://postgres@localhost/circle_test
+      - image: circleci/postgres:9.6-alpine
+        environment:
+          POSTGRES_USER: postgres
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install container dependencies
+          command: sudo apt-get install -qq -y postgresql-client
+
+      - run:
+          name: Install Node dependencies
+          command: npm ci
+
+      - run:
+          name: Check that seed data will load
+          command: npm run load-seed-data
+
+  lint:
+    docker:
+      - image: circleci/node:12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Node dependencies
+          command: npm ci
+
+      - run:
+          name: Check lint
+          command: npm run lint
+
+  format:
+    docker:
+      - image: circleci/node:12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Node dependencies
+          command: npm ci
+
+      - run:
+          name: Check code format
+          command: npm run format:check
+
+workflows:
+  version: 2
+
+  on-commit:
+    jobs:
+      - test
+      - lint
+      - format
+
+  daily:
+    triggers:
+      - schedule:
+          cron: '0 17 * * *'
+          filters:
+            branches:
+              only: main
+    jobs:
+      - test
+      - lint
+      - format

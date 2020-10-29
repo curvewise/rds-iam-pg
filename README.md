@@ -1,5 +1,16 @@
 # goldie-data-layer
 
+## System Dependendencies for Local Development
+
+On Fedora, install the following:
+
+```sh
+sudo dnf install perl-autodie.noarch perl-open.noarch
+```
+
+This is needed to get the `format:sql:check` and `format:sql:fix` npm scripts
+to work.
+
 ## Development
 
 The only supported config setting is `databaseUrl`, which is required. Copy

@@ -7,7 +7,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "load-seed-data": "DATABASE_URL=$(node scripts/get-database-url.js) scripts/load-seed-data.sh"
+    "load-seed-data": "DATABASE_URL=$(node scripts/get-database-url.js) scripts/load-seed-data.sh",
+    "lint": "eslint .",
+    "format:js:check": "prettier --check \"**/*.@(js|md|json|yml)\"",
+    "format:js:fix": "prettier --write \"**/*.@(js|md|json|yml)\"",
+    "format:sql:check": "node scripts/format-sql.js --check",
+    "format:sql:fix": "node scripts/format-sql.js",
+    "format:check": "run-s --silent --continue-on-error format:js:check format:sql:check",
+    "format:fix": "run-s --silent --continue-on-error format:js:fix format:sql:fix"
   },
   "author": "",
   "license": "UNLICENSED",
@@ -23,6 +30,17 @@
     "node": "12.9.1"
   },
   "devDependencies": {
-    "pg": "^8.4.0"
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-standard": "^14.0.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "globby": "^11.0.1",
+    "npm-run-all": "^4.1.5",
+    "pg": "^8.4.0",
+    "pg-formatter": "^1.1.2",
+    "prettier": "^2.1.2"
   }
 }
