@@ -1,3 +1,5 @@
+'use strict'
+
 const express = require('express')
 const { postgraphile } = require('postgraphile')
 const cors = require('cors')
