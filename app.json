@@ -1,7 +1,5 @@
 {
   "repository": "https://github.com/curvewise/goldie-data-layer",
-  "addons": [
-    "heroku-postgresql"
-  ],
+  "addons": ["heroku-postgresql"],
   "success_url": "/graphiql"
 }

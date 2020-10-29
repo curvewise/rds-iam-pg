@@ -30,20 +30,22 @@ http://localhost:5000/graphiql
 ### Initializing a local PostgreSQL database:
 
 1. Install PostgreSQL and start it:
-    ```sh
-    brew install postgresql
-    brew services start postgresql
-    ```
+
+   ```sh
+   brew install postgresql
+   brew services start postgresql
+   ```
 
 2. Create the database:
-    ```sh
-    createdb goldie
-    ```
+
+   ```sh
+   createdb goldie
+   ```
 
 3. Initialize the database:
-    ```sh
-    npm run load-seed-data
-    ```
+   ```sh
+   npm run load-seed-data
+   ```
 
 ## Deployment
 
