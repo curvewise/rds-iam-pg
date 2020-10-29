@@ -1,4 +1,6 @@
-#!/bin/bash -euo pipefail
+#!/bin/bash
+
+set -euo pipefail
 
 psql $DATABASE_URL \
     -f src/reset.sql \

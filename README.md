@@ -43,3 +43,20 @@ http://localhost:5000/graphiql
 
 In deployed environments, you can configure the server using the environment
 variables listed in `config/custom-environment-variables.yml`.
+
+[**On every deploy**, including e.g. configuration changes][when], the app's
+database is reset using the checked-in seed data.
+
+[when]: https://devcenter.heroku.com/articles/release-phase#when-does-the-release-command-run
+
+### Review apps
+
+Heroku is configured to create [review apps][] every time a PR is opened.
+When the app is created, an ephemeral Heroku Postgres database is created
+along with it. After each commit pushed to the branch, Heroku redeploys the
+review app &ndash; which includes resetting the database using the checked-in
+seed data.
+
+You can develop against a review app by pointing your database URL to it.
+
+[review apps]: https://devcenter.heroku.com/articles/github-integration-review-apps
