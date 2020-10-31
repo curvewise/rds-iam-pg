@@ -19,6 +19,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "aws-sdk": "^2.781.0",
     "config": "^3.3.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",

@@ -1,5 +1,19 @@
 {
   "repository": "https://github.com/curvewise/goldie-data-layer",
   "addons": ["heroku-postgresql"],
-  "success_url": "/graphiql"
+  "success_url": "/graphiql",
+  "env": {
+    "IMPORT_BUCKET": {
+      "description": "This is the bucket that will be used for importing body mesh geometry into the goldilocks database.",
+      "required": true
+    },
+    "AWS_ACCCESS_KEY_ID": {
+      "description": "AWS access_key_id credentials",
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "AWS secret_access_key credentials",
+      "required": true
+    }
+  }
 }

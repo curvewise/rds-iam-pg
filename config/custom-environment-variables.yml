@@ -1,1 +1,3 @@
 databaseUrl: DATABASE_URL
+awsProfile: AWS_PROFILE
+importBucket: IMPORT_BUCKET

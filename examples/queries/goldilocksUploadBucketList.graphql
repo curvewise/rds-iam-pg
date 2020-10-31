@@ -1,0 +1,16 @@
+query {
+	uploadBucketList {
+    IsTruncated
+    Marker
+    Name
+    Prefix
+    MaxKeys
+    Contents {
+      Key
+      LastModified
+      ETag
+      Size
+      StorageClass
+    }
+  }
+}

@@ -6,3 +6,20 @@
 
 # To use a PostgreSQL database on Fedora:
 # databaseUrl: postgresql://postgres:postgres@localhost:5432/goldie
+
+# This is optional. When you set up the AWS CLI for local development, it will
+# create a profile, and store it in ~/.aws/credentials. This includes the
+# aws_access_key_id and aws_secret_access_key of your IAM user. You can have
+# multiple profiles stored in ~/.aws/credentials.  If you only have one
+# profile, you do not need this variable - it will use the profile you set up
+# as the default credentials for your AWS config.  If you have more than one
+# profile set up (e.g. a personal AWS account, and an account for curvewise),
+# then you can set the awsProfile config variable, and it will use the
+# credentials in that profile for your AWS config. This is the same as
+# using the --profile flag in the AWS CLI.
+# For further information, see: https://aws.amazon.com/cli/
+# awsProfile: goldilocks_data_layer
+
+# This is the bucket that will be used for importing body mesh geometry into
+# the goldilocks database.
+# importBucket: goldilocks-upload
