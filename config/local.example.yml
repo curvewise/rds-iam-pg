@@ -23,3 +23,11 @@
 # This is the bucket that will be used for importing body mesh geometry into
 # the goldilocks database.
 # importBucket: goldilocks-upload
+
+# To test authentication locally, generate a shared secret using
+# node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+# and uncomment this block.
+
+# auth:
+#   enabled: true
+#   sharedSecret: '...'

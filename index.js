@@ -1,6 +1,10 @@
 'use strict'
 
+const crypto = require('crypto')
+const url = require('url')
 const express = require('express')
+const passport = require('passport')
+const { BasicStrategy } = require('passport-http')
 const { postgraphile } = require('postgraphile')
 const cors = require('cors')
 const Joi = require('joi')
@@ -9,10 +13,14 @@ const AWS = require('aws-sdk')
 const { makeExtendSchemaPlugin, gql } = require('graphile-utils')
 const util = require('util')
 
-const { databaseUrl, awsProfile, importBucket } = Joi.attempt(
-  require('config').util.toObject(),
-  configSchema
-)
+const {
+  port,
+  databaseUrl,
+  auth: { enabled: authEnabled, sharedSecret },
+  awsProfile,
+  importBucket,
+} = Joi.attempt(require('config').util.toObject(), configSchema)
+
 const myConfig = new AWS.Config({
   credentials: awsProfile
     ? new AWS.SharedIniFileCredentials({ profile: awsProfile })
@@ -23,9 +31,35 @@ const listObjects = util.promisify(s3.listObjects.bind(s3))
 
 const app = express()
 
-app.get('/', (req, res) => res.send('Goldilocks graphql server'))
+app.use(cors({ credentials: true }))
 
-app.use(cors())
+function timingSafeEqual(first, second) {
+  return (
+    first.length === second.length &&
+    crypto.timingSafeEqual(Buffer.from(first), Buffer.from(second))
+  )
+}
+
+if (authEnabled) {
+  passport.use(
+    new BasicStrategy((username, password, done) => {
+      // During development, we don't have accounts, so we trust anyone who
+      // provides the shared secret to identify themselves.
+      let valid = true
+      valid = valid && username.length
+      valid = valid && timingSafeEqual(password, sharedSecret)
+
+      if (valid) {
+        done(null, { username })
+      } else {
+        done(null, false)
+      }
+    })
+  )
+  app.use(passport.authenticate('basic', { session: false }))
+}
+
+app.get('/', (req, res) => res.send('Goldilocks graphql server'))
 
 const GoldilocksUploadBucketListPlugin = makeExtendSchemaPlugin(build => {
   return {
@@ -66,7 +100,19 @@ app.use(
     graphiql: true,
     enhanceGraphiql: true,
     appendPlugins: [GoldilocksUploadBucketListPlugin],
+    // Expose the username to PostgreSQL.
+    // https://www.graphile.org/postgraphile/usage-library/#exposing-http-request-data-to-postgresql
+    pgSettings: async req => ({ 'user.id': req.user.username }),
   })
 )
 
-app.listen(process.env.PORT || 5000)
+const server = app.listen(port)
+
+const { address } = server.address()
+const baseUrl = url.format({
+  protocol: 'http',
+  hostname: address,
+  port,
+  pathname: '/',
+})
+console.log(`Listening at ${baseUrl}graphql ${baseUrl}graphiql`)

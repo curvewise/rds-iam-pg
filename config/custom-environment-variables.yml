@@ -1,3 +1,6 @@
+port: PORT
 databaseUrl: DATABASE_URL
+auth:
+  sharedSecret: SHARED_SECRET
 awsProfile: AWS_PROFILE
 importBucket: IMPORT_BUCKET

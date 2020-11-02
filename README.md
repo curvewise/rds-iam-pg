@@ -1,6 +1,8 @@
 # goldie-data-layer
 
-## System Dependendencies for Local Development
+## Development
+
+### System dependencies
 
 On Fedora, install the following:
 
@@ -11,23 +13,20 @@ sudo dnf install perl-autodie.noarch perl-open.noarch
 This is needed to get the `format:sql:check` and `format:sql:fix` npm scripts
 to work.
 
-## Development
+### Configuration
 
-The only supported config setting is `databaseUrl`, which is required. Copy
-`config/local.example.yml` to `config/local.yml` and uncomment one of the
-lines. The complete config schema is documented in `src/config-schema.js`.
+1. Copy `config/local.example.yml` to `config/local.yml`.
+2. Uncomment one of the examples for `databaseUrl`.
+3. To test with authentication, generate a shared secret and set it in
+   `config/local.yml`.
 
-Then start the server:
+The complete config schema is documented in `src/config-schema.js`.
 
-```sh
-npm start
-```
+### Starting the server
 
-Browse GraphiQL:
+Start the server with `npm start`.
 
-http://localhost:5000/graphiql
-
-### Initializing a local PostgreSQL database:
+### Initializing a local PostgreSQL database
 
 1. Install PostgreSQL and start it:
 
@@ -47,7 +46,7 @@ http://localhost:5000/graphiql
    npm run load-seed-data
    ```
 
-### Changing the schema
+## Changing the schema
 
 Change the schema by creating the appropriate SQL tables and foreign key
 relationships. This is done in `src/ddl.sql`.

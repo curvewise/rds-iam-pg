@@ -3,11 +3,15 @@
   "addons": ["heroku-postgresql"],
   "success_url": "/graphiql",
   "env": {
+    "SHARED_SECRET": {
+      "description": "Shared authentication secret",
+      "required": true
+    },
     "IMPORT_BUCKET": {
       "description": "This is the bucket that will be used for importing body mesh geometry into the goldilocks database.",
       "required": true
     },
-    "AWS_ACCCESS_KEY_ID": {
+    "AWS_ACCESS_KEY_ID": {
       "description": "AWS access_key_id credentials",
       "required": true
     },

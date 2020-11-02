@@ -1,1 +1,4 @@
+port: 5000
+auth:
+  enabled: false
 importBucket: goldilocks-upload-test

@@ -25,6 +25,8 @@
     "express": "^4.17.1",
     "joi": "^17.3.0",
     "js-yaml": "^3.14.0",
+    "passport": "^0.4.1",
+    "passport-http": "^0.3.0",
     "postgraphile": "^4.9.0"
   },
   "engines": {
