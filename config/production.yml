@@ -1,2 +1,4 @@
 auth:
-  enabled: true
+  # enabled: true
+  # Temporarily disable until the frontend work is completed.
+  enabled: false
