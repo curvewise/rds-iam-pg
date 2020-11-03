@@ -102,7 +102,9 @@ app.use(
     appendPlugins: [GoldilocksUploadBucketListPlugin],
     // Expose the username to PostgreSQL.
     // https://www.graphile.org/postgraphile/usage-library/#exposing-http-request-data-to-postgresql
-    pgSettings: async req => ({ 'user.id': req.user.username }),
+    pgSettings: async req => ({
+      'user.id': req.user ? req.user.username : 'unknown',
+    }),
   })
 )
 
