@@ -25,6 +25,10 @@ jobs:
           name: Check that seed data will load
           command: npm run load-seed-data
 
+      - run:
+          name: Run tests
+          command: npm test
+
   lint:
     docker:
       - image: circleci/node:12

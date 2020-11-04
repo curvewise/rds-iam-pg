@@ -7,6 +7,12 @@ parserOptions:
   # though that setting is only for ES6 modules, not CommonJS modules.
   sourceType: 'script'
 
+overrides:
+  - files:
+      - 'src/**/*.test.js'
+    env:
+      mocha: true
+
 rules:
   # Disable some rules from eslint:recommended.
   no-empty: ['error', { 'allowEmptyCatch': true }]
