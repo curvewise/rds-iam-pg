@@ -59,6 +59,30 @@ Apply them to your database by running `npm run load-seed-data`. If the
 server is running, it will take note of the changes and automatically expose
 new GraphQL endpoints.
 
+#### Regenerate the ER diagram
+
+Here is the ER diagram corresponding to the database schema:
+
+![ER diagram](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/schema.svg)
+
+The [ER diagram](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/schema.svg) is generated with [DBVisualizer Free edition](https://www.dbvis.com/download/11.0).
+
+You can configure it as follows:
+
+1. Set up the local PostgreSQL connection:
+
+![](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/97652790-a04e3180-1a35-11eb-806a-580232366a9c.png)
+
+2. Navigate to `public -> TABLE`, and go to `References` tab:
+
+![](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/Screenshot%20from%202020-10-29%2016-59-15.png)
+
+Click this export button, choose SVG, and type in the full path to export to `schema.svg`:
+
+![](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/97652872-d7bcde00-1a35-11eb-84a7-525f5f6f5011.png)
+
+In the future, we would like to generate this programmatically via CLI.
+
 ## Deployment
 
 In deployed environments, you can configure the server using the environment
