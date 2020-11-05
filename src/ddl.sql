@@ -51,10 +51,27 @@ SET default_with_oids = false;
 -- Name: datasets; Type: TABLE; Schema: public; Owner: postgres
 --
 
+CREATE TYPE public.body_part_type AS ENUM (
+    'body',
+);
+
+CREATE TYPE public.topology_type AS ENUM (
+    'meshcapade_sm4'
+);
+
+CREATE TYPE public.units_type AS ENUM (
+    'm',
+    'cm',
+    'mm',
+    'in'
+);
+
 CREATE TABLE public.datasets (
     id integer NOT NULL,
     name character varying(50),
-    units character varying(2),
+    units public.units_type,
+    topology public.topology_type,
+    body_part public.body_part_type,
     reference_frame_up integer[],
     reference_frame_look integer[],
     CONSTRAINT datasets_reference_frame_look_check CHECK ((array_length(reference_frame_look, 1) = 3)),
