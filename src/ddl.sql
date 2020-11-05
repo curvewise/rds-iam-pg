@@ -62,16 +62,12 @@ CREATE TABLE public.datasets (
     PRIMARY KEY (id)
 );
 
-ALTER TABLE public.datasets OWNER TO postgres;
-
 CREATE SEQUENCE public.datasets_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-ALTER TABLE public.datasets_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.datasets_id_seq OWNED BY public.datasets.id;
 
@@ -94,8 +90,6 @@ CREATE TABLE public.subjects (
     CONSTRAINT subjects_dataset_fkey FOREIGN KEY (dataset_id) REFERENCES public.datasets (id)
 );
 
-ALTER TABLE public.subjects OWNER TO postgres;
-
 CREATE SEQUENCE public.subjects_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -105,8 +99,6 @@ CREATE SEQUENCE public.subjects_id_seq
 
 ALTER TABLE ONLY public.subjects
     ALTER COLUMN id SET DEFAULT nextval('public.subjects_id_seq'::regclass);
-
-ALTER TABLE public.subjects_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 
@@ -122,8 +114,6 @@ CREATE TABLE public.poses (
     CONSTRAINT poses_subjects_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects (id)
 );
 
-ALTER TABLE public.poses OWNER TO postgres;
-
 CREATE SEQUENCE public.poses_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -133,8 +123,6 @@ CREATE SEQUENCE public.poses_id_seq
 
 ALTER TABLE ONLY public.poses
     ALTER COLUMN id SET DEFAULT nextval('public.poses_id_seq'::regclass);
-
-ALTER TABLE public.poses_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.poses_id_seq OWNED BY public.poses.id;
 
@@ -154,8 +142,6 @@ CREATE TABLE public.measured_geometries (
     CONSTRAINT measured_geometries_unique_pose_version UNIQUE (pose_id, version)
 );
 
-ALTER TABLE public.measured_geometries OWNER TO postgres;
-
 CREATE SEQUENCE public.measured_geometries_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -165,8 +151,6 @@ CREATE SEQUENCE public.measured_geometries_id_seq
 
 ALTER TABLE ONLY public.measured_geometries
     ALTER COLUMN id SET DEFAULT nextval('public.measured_geometries_id_seq'::regclass);
-
-ALTER TABLE public.measured_geometries_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.measured_geometries_id_seq OWNED BY public.measured_geometries.id;
 
@@ -183,16 +167,12 @@ CREATE TABLE public.comments (
     PRIMARY KEY (id)
 );
 
-ALTER TABLE public.comments OWNER TO postgres;
-
 CREATE SEQUENCE public.comments_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-ALTER TABLE public.comments_id_seq OWNER TO postgres;
 
 SELECT
     pg_catalog.setval('public.comments_id_seq', 1, false);
@@ -224,10 +204,6 @@ CREATE SEQUENCE public.computed_points_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE public.computed_points OWNER TO postgres;
-
-ALTER TABLE public.computed_points_id_seq OWNER TO postgres;
-
 ALTER SEQUENCE public.computed_points_id_seq OWNED BY public.computed_points.id;
 
 SELECT
@@ -253,8 +229,6 @@ CREATE TABLE public.curves (
     CONSTRAINT curves_name_body_key UNIQUE (name, measured_geometry_id)
 );
 
-ALTER TABLE public.curves OWNER TO postgres;
-
 CREATE SEQUENCE public.curves_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -264,8 +238,6 @@ CREATE SEQUENCE public.curves_id_seq
 
 ALTER TABLE ONLY public.curves
     ALTER COLUMN id SET DEFAULT nextval('public.curves_id_seq'::regclass);
-
-ALTER TABLE public.curves_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.curves_id_seq OWNED BY public.curves.id;
 
@@ -283,8 +255,6 @@ CREATE TABLE public.labels (
     CONSTRAINT labels_name_key UNIQUE (name)
 );
 
-ALTER TABLE public.labels OWNER TO postgres;
-
 CREATE SEQUENCE public.labels_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -294,8 +264,6 @@ CREATE SEQUENCE public.labels_id_seq
 
 ALTER TABLE ONLY public.labels
     ALTER COLUMN id SET DEFAULT nextval('public.labels_id_seq'::regclass);
-
-ALTER TABLE public.labels_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.labels_id_seq OWNED BY public.labels.id;
 
@@ -318,8 +286,6 @@ CREATE TABLE public.landmarks (
     CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, measured_geometry_id)
 );
 
-ALTER TABLE public.landmarks OWNER TO postgres;
-
 CREATE SEQUENCE public.landmarks_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -329,8 +295,6 @@ CREATE SEQUENCE public.landmarks_id_seq
 
 ALTER TABLE ONLY public.landmarks
     ALTER COLUMN id SET DEFAULT nextval('public.landmarks_id_seq'::regclass);
-
-ALTER TABLE public.landmarks_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.landmarks_id_seq OWNED BY public.landmarks.id;
 
@@ -352,8 +316,6 @@ CREATE TABLE public. "values" (
     CONSTRAINT values_name_body_key UNIQUE (name, measured_geometry_id)
 );
 
-ALTER TABLE public. "values" OWNER TO postgres;
-
 CREATE SEQUENCE public.values_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
@@ -363,8 +325,6 @@ CREATE SEQUENCE public.values_id_seq
 
 ALTER TABLE ONLY public. "values"
     ALTER COLUMN id SET DEFAULT nextval('public.values_id_seq'::regclass);
-
-ALTER TABLE public.values_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.values_id_seq OWNED BY public. "values".id;
 
