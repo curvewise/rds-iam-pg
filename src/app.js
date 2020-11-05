@@ -7,6 +7,26 @@ const cors = require('cors')
 const { requireBasicAuth } = require('./auth')
 const { configSchema } = require('./config-schema')
 const { createS3Client, createUploadBucketListPlugin } = require('./s3')
+const { isNullableType } = require('graphql/type/definition')
+
+// look for root-level queries (e.g. allSubjects)
+// and look-up by id (e.g. datasetById)
+const reNonNullRelationsPlugin = /(^all.+$)|(^.+By.*Id$)/
+function NonNullRelationsPlugin(builder) {
+  builder.hook('GraphQLObjectType:fields:field', (field, build, context) => {
+    if (
+      reNonNullRelationsPlugin.test(context.scope.fieldName) &&
+      isNullableType(field.type)
+    ) {
+      return {
+        ...field,
+        type: new build.graphql.GraphQLNonNull(field.type),
+      }
+    } else {
+      return field
+    }
+  })
+}
 
 function createApp(config) {
   const {
@@ -28,14 +48,20 @@ function createApp(config) {
 
   app.get('/', (req, res) => res.send('Goldilocks graphql server'))
 
-  const plugins = [createUploadBucketListPlugin({ s3Client, importBucket })]
+  const plugins = [
+    createUploadBucketListPlugin({ s3Client, importBucket }),
+    NonNullRelationsPlugin,
+  ]
 
   app.use(
+    // these options are documented here:
+    // https://www.graphile.org/postgraphile/usage-cli/
     postgraphile(databaseUrl, 'public', {
       watchPg: true,
       graphiql: true,
       enhanceGraphiql: true,
       appendPlugins: plugins,
+      setofFunctionsContainNulls: false,
       // Expose the username to PostgreSQL.
       // https://www.graphile.org/postgraphile/usage-library/#exposing-http-request-data-to-postgresql
       pgSettings: async req => ({
