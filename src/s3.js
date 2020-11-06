@@ -35,14 +35,24 @@ function createUploadBucketListPlugin({ s3Client, importBucket }) {
         StorageClass: String
       }
 
+      type UploadBuckeMetadata {
+        uploadBucketName: String!
+        uploadBucketS3ConsoleUploadUrl: String!
+      }
+
       extend type Query {
         uploadBucketList: GoldilocksUploadBucketListResponse
+        serverSettings: UploadBuckeMetadata!
       }
     `,
     resolvers: {
       Query: {
         uploadBucketList: async () =>
           await listObjects({ Bucket: importBucket }),
+        serverSettings: () => ({
+          uploadBucketName: importBucket,
+          uploadBucketS3ConsoleUploadUrl: `https://s3.console.aws.amazon.com/s3/upload/${importBucket}?region=us-east-1`,
+        }),
       },
     },
   }))
