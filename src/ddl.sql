@@ -1,9 +1,3 @@
---
--- PostgreSQL database dump
---
--- Dumped from database version 10.10
--- Dumped by pg_dump version 10.10
-
 SET statement_timeout = 0;
 
 SET lock_timeout = 0;
@@ -25,10 +19,6 @@ SET client_min_messages = warning;
 
 SET row_security = off;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
---
-
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 SET default_tablespace = '';
@@ -36,7 +26,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: datasets; Type: TABLE; Schema: public; Owner: postgres
+-- Datasets
 --
 
 CREATE TYPE public.body_part_type AS ENUM (
@@ -83,7 +73,7 @@ ALTER TABLE ONLY public.datasets
     ALTER COLUMN id SET DEFAULT nextval('public.datasets_id_seq'::regclass);
 
 --
--- Name: subjects; Type: TABLE; Schema: public; Owner: postgres
+-- Subjects
 --
 
 CREATE TABLE public.subjects (
@@ -134,7 +124,10 @@ ALTER SEQUENCE public.poses_id_seq OWNED BY public.poses.id;
 SELECT
     pg_catalog.setval('public.poses_id_seq', 1, true);
 
--- measured_geometries
+--
+-- Measured geometries
+--
+
 CREATE TABLE public.measured_geometries (
     id integer NOT NULL,
     name character varying(50),
@@ -163,7 +156,7 @@ SELECT
     pg_catalog.setval('public.measured_geometries_id_seq', 1, true);
 
 --
--- Name: comments; Type: TABLE; Schema: public; Owner: postgres
+-- Comments
 --
 
 CREATE TABLE public.comments (
@@ -188,7 +181,7 @@ ALTER TABLE ONLY public.comments
 ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 
 --
--- Name: computed_points; Type: TABLE; Schema: public; Owner: postgres
+-- Computed points
 --
 
 CREATE TABLE public.computed_points (
@@ -218,7 +211,7 @@ ALTER TABLE ONLY public.computed_points
     ALTER COLUMN id SET DEFAULT nextval('public.computed_points_id_seq'::regclass);
 
 --
--- Name: curves; Type: TABLE; Schema: public; Owner: postgres
+-- Curves
 --
 
 CREATE TABLE public.curves (
@@ -250,7 +243,7 @@ SELECT
     pg_catalog.setval('public.curves_id_seq', 4, true);
 
 --
--- Name: labels; Type: TABLE; Schema: public; Owner: postgres
+-- Labels
 --
 
 CREATE TABLE public.labels (
@@ -276,7 +269,7 @@ SELECT
     pg_catalog.setval('public.labels_id_seq', 3, true);
 
 --
--- Name: landmarks; Type: TABLE; Schema: public; Owner: postgres
+-- Landmarks
 --
 
 CREATE TABLE public.landmarks (
@@ -307,7 +300,7 @@ SELECT
     pg_catalog.setval('public.landmarks_id_seq', 9, true);
 
 --
--- Name: values; Type: TABLE; Schema: public; Owner: postgres
+-- Values
 --
 
 CREATE TABLE public. "values" (
@@ -336,7 +329,10 @@ ALTER SEQUENCE public.values_id_seq OWNED BY public. "values".id;
 SELECT
     pg_catalog.setval('public.values_id_seq', 4, true);
 
---feedback_assocations table
+--
+-- Feedback
+--
+
 CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
     subject_id integer,
@@ -375,7 +371,10 @@ ALTER TABLE ONLY public.feedback_associations
 SELECT
     pg_catalog.setval('public.feedback_associations_id_seq', 1, false);
 
--- measured_body_views
+--
+-- Measured body views
+--
+
 CREATE TABLE public.measured_body_views (
     id integer NOT NULL,
     version integer,
@@ -395,7 +394,10 @@ ALTER SEQUENCE public.measured_body_views_id_seq OWNED BY public.measured_body_v
 SELECT
     pg_catalog.setval('public.measured_body_views_id_seq', 1, false);
 
--- measurement_views
+--
+-- Measuremnt views
+--
+
 CREATE TABLE public.measurement_views (
     id integer NOT NULL,
     name VARCHAR(50),
@@ -417,7 +419,10 @@ ALTER SEQUENCE public.measurement_views_id_seq OWNED BY public.measurement_views
 SELECT
     pg_catalog.setval('public.measurement_views_id_seq', 1, false);
 
--- body_views table
+--
+-- Body views
+--
+
 CREATE TABLE public.body_views (
     id integer NOT NULL,
     position double precision[3],
