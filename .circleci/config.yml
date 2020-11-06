@@ -5,10 +5,13 @@ jobs:
     docker:
       - image: circleci/node:12
         environment:
-          DATABASE_URL: postgresql://postgres@localhost/circle_test
-      - image: circleci/postgres:9.6-alpine
+          DATABASE_URL: postgresql://circleci:AchTMOV0lWxIJO7Os0YCZ7iUAOp2OCm3XP2pWjsfIcE@localhost/circle_test
+      - image: circleci/postgres:12.4
         environment:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: circleci
+          # In a secondary container, this value can't be set from the environment.
+          # https://discuss.circleci.com/t/postgresql-image-password-not-specified-issue/34555
+          POSTGRES_PASSWORD: 'AchTMOV0lWxIJO7Os0YCZ7iUAOp2OCm3XP2pWjsfIcE'
 
     steps:
       - checkout
@@ -16,6 +19,12 @@ jobs:
       - run:
           name: Install container dependencies
           command: sudo apt-get install -qq -y postgresql-client
+
+      - run:
+          name: Show Postgres version
+          command: |
+            psql --version
+            psql $DATABASE_URL -c "SELECT version();"
 
       - run:
           name: Install Node dependencies
