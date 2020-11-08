@@ -34,6 +34,7 @@ function createApp(config) {
     auth: { enabled: authEnabled, sharedSecret },
     awsProfile,
     importBucket,
+    awsConsoleSignInUrl,
   } = Joi.attempt(config, configSchema)
 
   const s3Client = createS3Client({ awsProfile })
@@ -49,7 +50,11 @@ function createApp(config) {
   app.get('/', (req, res) => res.send('Goldilocks graphql server'))
 
   const plugins = [
-    createUploadBucketListPlugin({ s3Client, importBucket }),
+    createUploadBucketListPlugin({
+      s3Client,
+      importBucket,
+      awsConsoleSignInUrl,
+    }),
     NonNullRelationsPlugin,
   ]
 

@@ -13,7 +13,11 @@ function createS3Client({ awsProfile }) {
   return new AWS.S3(config)
 }
 
-function createUploadBucketListPlugin({ s3Client, importBucket }) {
+function createUploadBucketListPlugin({
+  s3Client,
+  importBucket,
+  awsConsoleSignInUrl,
+}) {
   const listObjects = promisify(s3Client.listObjects.bind(s3Client))
 
   return makeExtendSchemaPlugin(build => ({
@@ -38,6 +42,7 @@ function createUploadBucketListPlugin({ s3Client, importBucket }) {
       type UploadBuckeMetadata {
         uploadBucketName: String!
         uploadBucketS3ConsoleUploadUrl: String!
+        awsConsoleSignInUrl: String!
       }
 
       extend type Query {
@@ -52,6 +57,7 @@ function createUploadBucketListPlugin({ s3Client, importBucket }) {
         serverSettings: () => ({
           uploadBucketName: importBucket,
           uploadBucketS3ConsoleUploadUrl: `https://s3.console.aws.amazon.com/s3/upload/${importBucket}?region=us-east-1`,
+          awsConsoleSignInUrl,
         }),
       },
     },
