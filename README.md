@@ -63,9 +63,9 @@ new GraphQL endpoints.
 
 Here is the ER diagram corresponding to the database schema:
 
-![ER diagram](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/schema.svg)
+![ER diagram](resources/schema.svg)
 
-The [ER diagram](http://curvewise-public-resources.s3-website-us-east-1.amazonaws.com/schema.svg) is generated with [DBVisualizer Free edition](https://www.dbvis.com/download/11.0).
+The [ER diagram](resources/schema.svg) is generated with [DBVisualizer Free edition](https://www.dbvis.com/download/11.0).
 
 You can configure it as follows:
 
