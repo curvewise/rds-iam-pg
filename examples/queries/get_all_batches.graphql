@@ -4,9 +4,8 @@ query MyQuery {
       id
       name
       units
-      referenceFrameUp
-      referenceFrameLook
+      superior_direction
+      anterior_direction
     }
   }
 }
-

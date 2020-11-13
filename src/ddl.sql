@@ -44,16 +44,23 @@ CREATE TYPE public.units_type AS ENUM (
     'in'
 );
 
+CREATE TYPE public.axis_type AS ENUM (
+    'x',
+    'y',
+    'z',
+    'neg_x',
+    'neg_y',
+    'neg_z'
+);
+
 CREATE TABLE public.datasets (
     id integer NOT NULL,
-    name character varying(50),
-    units public.units_type,
+    name character varying(50) NOT NULL,
+    units public.units_type NOT NULL,
     topology public.topology_type,
-    body_part public.body_part_type,
-    reference_frame_up integer[],
-    reference_frame_look integer[],
-    CONSTRAINT datasets_reference_frame_look_check CHECK ((array_length(reference_frame_look, 1) = 3)),
-    CONSTRAINT datasets_reference_frame_up_check CHECK ((array_length(reference_frame_up, 1) = 3)),
+    body_part public.body_part_type NOT NULL,
+    superior_direction public.axis_type,
+    anterior_direction public.axis_type,
     PRIMARY KEY (id)
 );
 

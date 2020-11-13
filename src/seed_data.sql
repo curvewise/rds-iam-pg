@@ -2,8 +2,8 @@
 -- Datasets
 --
 
-COPY public.datasets (id, name, units, topology, body_part, reference_frame_up, reference_frame_look) FROM stdin;
-1	2020-09-19	cm	meshcapade_sm4	body	{0,1,0}	{0,0,1}
+COPY public.datasets (id, name, units, topology, body_part, superior_direction, anterior_direction) FROM stdin;
+1	2020-09-19	cm	meshcapade_sm4	body	y	z
 \.
 
 --
