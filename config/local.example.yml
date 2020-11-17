@@ -31,3 +31,25 @@
 # auth:
 #   enabled: true
 #   sharedSecret: '...'
+
+# This sets which AWS profiles are available in ~/.aws/credentials for testing
+# bucket permissions.
+
+# test:
+#   iamUserProfilesAvailable:
+#     - admin_test_user
+#     - program_manager_test_user
+#     - developer_test_user
+#     - goldilocks_data_layer_production
+#     - goldilocks_data_layer_pull_request
+#     - goldilocks_data_layer_sandbox
+#     - goldilocks_data_layer_staging
+#     - goldilocks_data_layer_test
+
+# This sets which user the test is running as. Also, if this config var is set,
+# then it will load the credentials from the environment variables
+# AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY, rather than loading from
+# ~/.aws/credentials.
+
+# test:
+#   runningAsIamUser: goldilocks_data_layer_test

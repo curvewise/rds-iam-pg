@@ -16,6 +16,10 @@ const configSchema = Joi.object({
   awsProfile: Joi.string(),
   importBucket: Joi.string().required(),
   awsConsoleSignInUrl: Joi.string().uri({ scheme: ['https'] }),
+  test: Joi.object({
+    iamUserProfilesAvailable: Joi.array().items(Joi.string()),
+    runningAsIamUser: [Joi.string(), null],
+  }),
 }).required()
 
 module.exports = { configSchema }

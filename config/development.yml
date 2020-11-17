@@ -2,3 +2,6 @@ port: 5000
 auth:
   enabled: false
 importBucket: goldilocks-upload-test
+
+test:
+  runningAsIamUser: goldilocks_data_layer_test
