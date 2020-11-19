@@ -1,11 +1,11 @@
 query {
-  measuredGeometryById(id: 1) {
+  geometryById(id: 1) {
     nodeId
     name
     s3Bucket
     s3Path
     version
-    curvesByMeasuredGeometryId {
+    curvesByGeometryId {
       nodes {
         name
         vertices

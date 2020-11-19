@@ -14,7 +14,7 @@ query GetBodiesForADataset {
                   node {
                     id
                     name
-                    measuredGeometriesByPoseId {
+                    geometriesByPoseId {
                       edges {
                         node {
                           id

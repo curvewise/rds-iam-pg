@@ -145,10 +145,10 @@ SELECT
     pg_catalog.setval('public.poses_id_seq', 1, true);
 
 --
--- Measured geometries
+-- geometries
 --
 
-CREATE TABLE public.measured_geometries (
+CREATE TABLE public.geometries (
     id integer NOT NULL,
     name character varying(50),
     s3_bucket character varying(50) NOT NULL,
@@ -156,24 +156,182 @@ CREATE TABLE public.measured_geometries (
     version integer NOT NULL,
     pose_id integer NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT measured_geometries_poses_fkey FOREIGN KEY (pose_id) REFERENCES public.poses (id),
-    CONSTRAINT measured_geometries_unique_pose_version UNIQUE (pose_id, version)
+    CONSTRAINT geometries_poses_fkey FOREIGN KEY (pose_id) REFERENCES public.poses (id),
+    CONSTRAINT geometries_unique_pose_version UNIQUE (pose_id, version)
 );
 
-CREATE SEQUENCE public.measured_geometries_id_seq
+CREATE FUNCTION public.dataset_id_for_geometry_id (geometry_id integer)
+    RETURNS integer
+    AS $$
+    SELECT
+        d.id
+    from
+        public.datasets d
+        inner join public.subjects s on s.dataset_id = d.id
+        inner join public.poses p on p.subject_id = s.id
+        inner join public.geometries g on g.pose_id = p.id
+    where
+        geometry_id = g.id
+$$
+LANGUAGE sql
+STABLE;
+
+CREATE FUNCTION public.geometries_dataset_id (geometry public.geometries)
+    RETURNS integer
+    AS $$
+    select
+        public.dataset_id_for_geometry_id (geometry.id)
+$$
+LANGUAGE sql
+STABLE;
+
+CREATE SEQUENCE public.geometries_id_seq
     AS integer START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE ONLY public.measured_geometries
-    ALTER COLUMN id SET DEFAULT nextval('public.measured_geometries_id_seq'::regclass);
+ALTER TABLE ONLY public.geometries
+    ALTER COLUMN id SET DEFAULT nextval('public.geometries_id_seq'::regclass);
 
-ALTER SEQUENCE public.measured_geometries_id_seq OWNED BY public.measured_geometries.id;
+ALTER SEQUENCE public.geometries_id_seq OWNED BY public.geometries.id;
 
 SELECT
-    pg_catalog.setval('public.measured_geometries_id_seq', 1, true);
+    pg_catalog.setval('public.geometries_id_seq', 1, true);
+
+--
+-- jobs
+--
+
+CREATE TABLE public.jobs (
+    id integer NOT NULL,
+    name character varying(50),
+    PRIMARY KEY (id)
+    --TODO: status enum
+);
+
+CREATE FUNCTION public.jobs_dataset_id (job public.jobs)
+    RETURNS integer
+    AS $$
+    SELECT
+        d.id
+    from
+        public.datasets d
+        inner join public.subjects s on s.dataset_id = d.id
+        inner join public.poses p on p.subject_id = s.id
+        inner join public.geometries g on g.pose_id = p.id
+        inner join public.job_results jr on jr.geometry_id = g.id
+        inner join public.jobs j on jr.job_id = j.id
+    where
+        j.id = job.id;
+
+$$
+LANGUAGE sql
+STABLE;
+
+CREATE SEQUENCE public.jobs_id_seq
+    AS integer START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE ONLY public.jobs
+    ALTER COLUMN id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
+
+ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
+
+SELECT
+    pg_catalog.setval('public.jobs_id_seq', 1, true);
+
+--
+-- job_results
+--
+
+CREATE TABLE public.job_results (
+    id integer NOT NULL,
+    job_id integer NOT NULL,
+    geometry_id integer NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT job_id_fkey FOREIGN KEY (job_id) REFERENCES public.jobs (id),
+    CONSTRAINT geometry_id_fkey FOREIGN KEY (geometry_id) REFERENCES public.geometries (id)
+);
+
+CREATE FUNCTION public.job_results_dataset_id (job_result public.job_results)
+    RETURNS integer
+    AS $$
+    SELECT
+        d.id
+    from
+        public.datasets d
+        inner join public.subjects s on s.dataset_id = d.id
+        inner join public.poses p on p.subject_id = s.id
+        inner join public.geometries g on g.pose_id = p.id
+        inner join public.job_results jr on jr.geometry_id = g.id
+    where
+        jr.id = job_result.id;
+
+$$
+LANGUAGE sql
+STABLE;
+
+CREATE FUNCTION public.validate_job_result ()
+    returns trigger
+    as $$
+DECLARE
+    geometries_from_different_dataset_count int;
+    DECLARE new_record_dataset_id int;
+    DECLARE existing_dataset_id int;
+BEGIN
+    new_record_dataset_id := public.dataset_id_for_geometry_id (NEW.geometry_id);
+    geometries_from_different_dataset_count := (
+        SELECT
+            COUNT(*)
+        FROM
+            public.job_results jr
+            inner join public.geometries g on jr.geometry_id = g.id
+        where
+            jr.job_id = NEW.job_id
+            and public.geometries_dataset_id (g) != new_record_dataset_id);
+    IF (geometries_from_different_dataset_count != 0) THEN
+        existing_dataset_id := (
+            SELECT
+                public.geometries_dataset_id (g)
+            FROM
+                public.job_results jr
+                inner join public.geometries g on jr.geometry_id = g.id
+            where
+                jr.job_id = NEW.job_id
+            limit 1);
+        RAISE EXCEPTION 'You attempted to insert a geometry for job % that is associated with dataset %, but this job is already associated with dataset %.', NEW.job_id, new_record_dataset_id, existing_dataset_id;
+    END IF;
+    RETURN NEW;
+END;
+
+$$
+language plpgsql;
+
+CREATE TRIGGER validate_job_result_trigger
+    BEFORE INSERT
+    OR UPDATE ON public.job_results
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.validate_job_result ();
+
+CREATE SEQUENCE public.job_results_id_seq
+    AS integer START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE ONLY public.jobs
+    ALTER COLUMN id SET DEFAULT nextval('public.job_results_id_seq'::regclass);
+
+ALTER SEQUENCE public.job_results_id_seq OWNED BY public.jobs.id;
+
+SELECT
+    pg_catalog.setval('public.job_results_id_seq', 1, true);
 
 --
 -- Comments
@@ -208,11 +366,11 @@ CREATE TABLE public.computed_points (
     vertex double precision[],
     id integer NOT NULL,
     name character varying(50),
-    measured_geometry_id integer NOT NULL,
+    job_result_id integer NOT NULL,
     CONSTRAINT computed_points_vertex_check CHECK ((array_length(vertex, 1) = 3)),
     PRIMARY KEY (id),
-    CONSTRAINT computed_points_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries (id),
-    CONSTRAINT computed_points_name_body_key UNIQUE (name, measured_geometry_id)
+    CONSTRAINT computed_points_job_result_fkey FOREIGN KEY (job_result_id) REFERENCES public.job_results (id),
+    CONSTRAINT computed_points_name_body_key UNIQUE (name, job_result_id)
 );
 
 CREATE SEQUENCE public.computed_points_id_seq
@@ -239,12 +397,12 @@ CREATE TABLE public.curves (
     name character varying(50),
     is_closed boolean,
     vertices double precision[],
-    measured_geometry_id integer NOT NULL,
+    job_result_id integer NOT NULL,
     tape_width double precision,
     PRIMARY KEY (id),
     CONSTRAINT curves_vertices_check CHECK ((array_length(vertices, 2) = 3)),
-    CONSTRAINT curves_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries (id),
-    CONSTRAINT curves_name_body_key UNIQUE (name, measured_geometry_id)
+    CONSTRAINT curves_job_results_fkey FOREIGN KEY (job_result_id) REFERENCES public.job_results (id),
+    CONSTRAINT curves_name_job_results_key UNIQUE (name, job_result_id)
 );
 
 CREATE SEQUENCE public.curves_id_seq
@@ -297,11 +455,11 @@ CREATE TABLE public.landmarks (
     id integer NOT NULL,
     landmark_name character varying(50),
     landmark_set_name character varying(50),
-    measured_geometry_id integer NOT NULL,
+    job_result_id integer NOT NULL,
     CONSTRAINT landmarks_vertex_check CHECK ((array_length(vertex, 1) = 3)),
     PRIMARY KEY (id),
-    CONSTRAINT landmarks_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries (id),
-    CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, measured_geometry_id)
+    CONSTRAINT landmarks_job_results_fkey FOREIGN KEY (job_result_id) REFERENCES public.job_results (id),
+    CONSTRAINT landmarks_landmark_name_landmark_set_name_body_key UNIQUE (landmark_name, landmark_set_name, job_result_id)
 );
 
 CREATE SEQUENCE public.landmarks_id_seq
@@ -328,10 +486,10 @@ CREATE TABLE public. "values" (
     name character varying(50),
     value double precision,
     units character varying(2),
-    measured_geometry_id integer NOT NULL,
+    job_result_id integer NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT values_body_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries (id),
-    CONSTRAINT values_name_body_key UNIQUE (name, measured_geometry_id)
+    CONSTRAINT values_job_results_fkey FOREIGN KEY (job_result_id) REFERENCES public.job_results (id),
+    CONSTRAINT values_name_job_results_key UNIQUE (name, job_result_id)
 );
 
 CREATE SEQUENCE public.values_id_seq
@@ -357,7 +515,7 @@ CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
     subject_id integer,
     pose_id integer,
-    measured_geometry_id integer,
+    geometry_id integer,
     landmark_id integer,
     computed_point_id integer,
     value_id integer,
@@ -367,7 +525,7 @@ CREATE TABLE public.feedback_associations (
     PRIMARY KEY (id),
     CONSTRAINT feedback_associations_subject_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects (id),
     CONSTRAINT feedback_associations_pose_fkey FOREIGN KEY (pose_id) REFERENCES public.poses (id),
-    CONSTRAINT feedback_associations_measured_geometry_fkey FOREIGN KEY (measured_geometry_id) REFERENCES public.measured_geometries (id),
+    CONSTRAINT feedback_associations_geometry_fkey FOREIGN KEY (geometry_id) REFERENCES public.geometries (id),
     CONSTRAINT feedback_associations_landmark_fkey FOREIGN KEY (landmark_id) REFERENCES public.landmarks (id),
     CONSTRAINT feedback_associations_computed_point_fkey FOREIGN KEY (computed_point_id) REFERENCES public.computed_points (id),
     CONSTRAINT feedback_associations_curve_fkey FOREIGN KEY (curve_id) REFERENCES public.curves (id),
