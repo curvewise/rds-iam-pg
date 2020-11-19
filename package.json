@@ -28,7 +28,7 @@
     "js-yaml": "^3.14.0",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",
-    "postgraphile": "^4.9.0"
+    "postgraphile": "4.10.0-alpha.0"
   },
   "engines": {
     "node": "12.9.1"
