@@ -61,6 +61,19 @@ CREATE TABLE public.datasets (
     body_part public.body_part_type NOT NULL,
     superior_direction public.axis_type,
     anterior_direction public.axis_type,
+    CONSTRAINT axes_null_together CHECK ((superior_direction IS NULL
+            AND anterior_direction IS NULL)
+        OR (superior_direction IS NOT NULL
+            AND anterior_direction IS NOT NULL)),
+    CONSTRAINT axes_orthogonal CHECK (superior_direction != anterior_direction
+        OR superior_direction IS NULL),
+    CONSTRAINT axes_required CHECK (
+        CASE WHEN body_part = 'body' THEN
+        (superior_direction IS NOT NULL
+            AND anterior_direction IS NOT NULL)
+    ELSE
+        TRUE
+        END),
     PRIMARY KEY (id)
 );
 
