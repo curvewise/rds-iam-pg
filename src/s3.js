@@ -28,15 +28,15 @@ function createUploadBucketListPlugin({
         Name: String
         Prefix: String
         MaxKeys: Int
-        Contents: [GoldilocksUploadBucketListResponseContents]
+        Contents: [GoldilocksUploadBucketListResponseContents!]
       }
 
       type GoldilocksUploadBucketListResponseContents {
-        Key: String
-        LastModified: Date
-        ETag: String
-        Size: Int
-        StorageClass: String
+        Key: String!
+        LastModified: Date!
+        ETag: String!
+        Size: Int!
+        StorageClass: String!
       }
 
       type UploadBuckeMetadata {
