@@ -5,6 +5,7 @@
 COPY public.datasets (id, name, units, topology, body_part, superior_direction, anterior_direction) FROM stdin;
 1	2020-09-19	cm	meshcapade_sm4	body	y	z
 2	2020-11-18	cm	meshcapade_sm4	body	y	z
+3	2020-11-29	cm	meshcapade_sm4	body	y	z
 \.
 
 --
@@ -18,6 +19,12 @@ COPY public.subjects (id, name, gender, dataset_id) FROM stdin;
 4	subject4	F	2
 5	subject5	F	2
 6	subject6	F	2
+7	subject7	F	3
+8	subject8	F	3
+9	subject9	F	3
+10	subject10	F	3
+11	subject11	M	3
+12	subject12	M	3
 \.
 
 --
@@ -31,6 +38,18 @@ COPY public.poses (id, name, subject_id) FROM stdin;
 4	pose1	4
 5	pose2	5
 6	pose3	6
+7	pose1	7
+8	pose1	8
+9	pose1	9
+10	pose1	10
+11	pose1	11
+12	pose1	12
+13	pose2	7
+14	pose2	8
+15	pose2	9
+16	pose2	10
+17	pose2	11
+18	pose2	12
 \.
 
 --
@@ -44,6 +63,18 @@ COPY public.geometries (id, name, s3_bucket, s3_path, version, pose_id ) FROM st
 4	body1	test_bucket	/bodies/body1.obj	1	4
 5	body2	test_bucket	/bodies/body2.obj	1	5
 6	body3	test_bucket	/bodies/body3.obj	1	6
+7	body1	test_bucket	/bodies/body1.obj	1	7
+8	body2	test_bucket	/bodies/body2.obj	1	8
+9	body3	test_bucket	/bodies/body3.obj	1	9
+10	body4	test_bucket	/bodies/body4.obj	1	10
+11	body5	test_bucket	/bodies/body5.obj	1	11
+12	body6	test_bucket	/bodies/body6.obj	1	12
+13	body7	test_bucket	/bodies/body7.obj	1	13
+14	body8	test_bucket	/bodies/body8.obj	1	14
+15	body9	test_bucket	/bodies/body9.obj	1	15
+16	body10	test_bucket	/bodies/body10.obj	1	16
+17	body11	test_bucket	/bodies/body11.obj	1	17
+18	body12	test_bucket	/bodies/body12.obj	1	18
 \.
 
 
