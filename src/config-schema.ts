@@ -1,8 +1,22 @@
-'use strict'
+import Joi from 'joi'
 
-const Joi = require('joi')
+export interface Config {
+  port: number
+  databaseUrl: string
+  auth: {
+    enabled: boolean
+    sharedSecret?: string
+  }
+  awsProfile?: string
+  importBucket: string
+  awsConsoleSignInUrl: string
+  test?: {
+    iamUserProfilesAvailable: string[]
+    runningAsIamUser?: string
+  }
+}
 
-const configSchema = Joi.object({
+export const configSchema = Joi.object({
   port: Joi.number().required(),
   databaseUrl: Joi.string().uri({ scheme: ['postgres', 'postgresql'] }),
   auth: Joi.object({
@@ -15,11 +29,11 @@ const configSchema = Joi.object({
   }).required(),
   awsProfile: Joi.string(),
   importBucket: Joi.string().required(),
-  awsConsoleSignInUrl: Joi.string().uri({ scheme: ['https'] }),
+  awsConsoleSignInUrl: Joi.string()
+    .uri({ scheme: ['https'] })
+    .required(),
   test: Joi.object({
     iamUserProfilesAvailable: Joi.array().items(Joi.string()),
     runningAsIamUser: [Joi.string(), null],
   }),
 }).required()
-
-module.exports = { configSchema }

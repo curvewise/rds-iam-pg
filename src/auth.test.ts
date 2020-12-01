@@ -1,8 +1,6 @@
-'use strict'
-
-const { expect } = require('chai')
-const { request } = require('graphql-request')
-const { createTestServer } = require('./server-test-helpers')
+import { expect } from 'chai'
+import { request } from 'graphql-request'
+import { createTestServer } from './server-test-helpers'
 
 const listDatasetQuery = `
   query ListDatasets {
@@ -16,7 +14,7 @@ const listDatasetQuery = `
 
 describe('Authentication', () => {
   context('When auth is disabled', () => {
-    let url, close
+    let url: string, close: () => Promise<void>
     beforeEach(async () => {
       ;({ url, close } = await createTestServer({ auth: { enabled: false } }))
     })

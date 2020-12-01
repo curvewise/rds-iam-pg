@@ -8,4 +8,4 @@ psql $DATABASE_URL \
     -f src/ddl.sql \
     -f src/seed_data.sql 
 
-node scripts/load-seed-data.js
+ts-node scripts/load-seed-data.ts

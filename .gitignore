@@ -11,4 +11,5 @@ rds.env
 !/config/local*.example.yml
 
 .DS_Store
+/dist
 

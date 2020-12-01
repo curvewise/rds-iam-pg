@@ -1,20 +1,15 @@
-'use strict'
-
 // miscellaneous tests for the database
 
 // connect to the db
 // verify the state
 // attempt to insert a row that we know will fail
 
-const { Client } = require('pg')
-const Joi = require('joi')
-const { configSchema } = require('./config-schema')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+import { Client } from 'pg'
+import Joi from 'joi'
+import { configSchema } from './config-schema'
+import chai, { assert } from 'chai'
 
-chai.use(chaiAsPromised)
-
-const assert = chai.assert
+chai.use(require('chai-as-promised'))
 
 const { databaseUrl } = Joi.attempt(
   require('config').util.toObject(),

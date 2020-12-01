@@ -1,12 +1,17 @@
-'use strict'
+import http from 'http'
+import { promisify } from 'util'
+import merge from 'deepmerge'
+import portfinder from 'portfinder'
+import { createApp } from './app'
+import { Config } from './config-schema'
 
-const { promisify } = require('util')
-const merge = require('deepmerge')
-const portfinder = require('portfinder')
-const { createApp } = require('./app')
+export type Listen = (port: number) => Promise<http.Server>
 
-async function createTestServer(config = {}) {
-  const mergedConfig = merge(require('config').util.toObject(), config)
+export async function createTestServer(config = {}) {
+  const mergedConfig = merge(
+    require('config').util.toObject() as Config,
+    config
+  )
   if (!mergedConfig.port) {
     mergedConfig.port = await portfinder.getPortPromise()
   }
@@ -16,7 +21,7 @@ async function createTestServer(config = {}) {
   const { port } = mergedConfig
   const url = `http://localhost:${port}/graphql`
 
-  const listen = promisify(app.listen.bind(app))
+  const listen = (promisify(app.listen.bind(app)) as unknown) as Listen
   const server = await listen(port)
 
   async function close() {
@@ -28,5 +33,3 @@ async function createTestServer(config = {}) {
 
   return { app, server, url, close }
 }
-
-module.exports = { createTestServer }

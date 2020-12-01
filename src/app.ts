@@ -1,18 +1,17 @@
-'use strict'
-
-const express = require('express')
-const Joi = require('joi')
-const { postgraphile } = require('postgraphile')
-const cors = require('cors')
-const { requireBasicAuth } = require('./auth')
-const { configSchema } = require('./config-schema')
-const { createS3Client, createUploadBucketListPlugin } = require('./s3')
-const { isNullableType } = require('graphql/type/definition')
+import express from 'express'
+import { SchemaBuilder } from 'graphile-build'
+import Joi from 'joi'
+import { postgraphile } from 'postgraphile'
+import cors from 'cors'
+import { requireBasicAuth, RequestWithAuth } from './auth'
+import { configSchema, Config } from './config-schema'
+import { createS3Client, createUploadBucketListPlugin } from './s3'
+import { isNullableType } from 'graphql/type/definition'
 
 // look for root-level queries (e.g. allSubjects)
 // and look-up by id (e.g. datasetById)
 const reNonNullRelationsPlugin = /(^all.+$)|(^.+By.*Id$)/
-function NonNullRelationsPlugin(builder) {
+function NonNullRelationsPlugin(builder: SchemaBuilder) {
   builder.hook('GraphQLObjectType:fields:field', (field, build, context) => {
     if (
       reNonNullRelationsPlugin.test(context.scope.fieldName) &&
@@ -28,14 +27,14 @@ function NonNullRelationsPlugin(builder) {
   })
 }
 
-function createApp(config) {
+export function createApp(config: Config) {
   const {
     databaseUrl,
     auth: { enabled: authEnabled, sharedSecret },
     awsProfile,
     importBucket,
     awsConsoleSignInUrl,
-  } = Joi.attempt(config, configSchema)
+  } = Joi.attempt(config, configSchema) as Config
 
   const s3Client = createS3Client({ awsProfile })
 
@@ -44,7 +43,10 @@ function createApp(config) {
   app.use(cors({ credentials: true }))
 
   if (authEnabled) {
-    requireBasicAuth(app, { sharedSecret })
+    if (!sharedSecret) {
+      throw Error('Config validation should prevent reaching this point')
+    }
+    requireBasicAuth(app, { sharedSecret: sharedSecret })
   }
 
   app.get('/', (req, res) => res.send('Goldilocks graphql server'))
@@ -69,7 +71,7 @@ function createApp(config) {
       setofFunctionsContainNulls: false,
       // Expose the username to PostgreSQL.
       // https://www.graphile.org/postgraphile/usage-library/#exposing-http-request-data-to-postgresql
-      pgSettings: async req => ({
+      pgSettings: async (req: RequestWithAuth) => ({
         'user.id': req.user ? req.user.username : 'unknown',
       }),
     })
@@ -77,5 +79,3 @@ function createApp(config) {
 
   return app
 }
-
-module.exports = { createApp }

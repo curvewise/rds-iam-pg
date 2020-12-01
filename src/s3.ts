@@ -1,10 +1,13 @@
-'use strict'
+import { promisify } from 'util'
+import AWS from 'aws-sdk'
+import { Build } from 'graphile-build'
+import { makeExtendSchemaPlugin, gql } from 'graphile-utils'
 
-const { promisify } = require('util')
-const AWS = require('aws-sdk')
-const { makeExtendSchemaPlugin, gql } = require('graphile-utils')
-
-function createS3Client({ awsProfile }) {
+export function createS3Client({
+  awsProfile,
+}: {
+  awsProfile?: string
+}): AWS.S3 {
   const config = new AWS.Config({
     credentials: awsProfile
       ? new AWS.SharedIniFileCredentials({ profile: awsProfile })
@@ -13,14 +16,26 @@ function createS3Client({ awsProfile }) {
   return new AWS.S3(config)
 }
 
-function createUploadBucketListPlugin({
+export type ListBuckets = (
+  request: AWS.S3.Types.ListObjectVersionsRequest
+) => Promise<AWS.S3.Types.ListObjectsOutput>
+
+export function promisifiedListObjects(s3Client: AWS.S3): ListBuckets {
+  return promisify(s3Client.listObjects.bind(s3Client))
+}
+
+export function createUploadBucketListPlugin({
   s3Client,
   importBucket,
   awsConsoleSignInUrl,
+}: {
+  s3Client: AWS.S3
+  importBucket: string
+  awsConsoleSignInUrl: string
 }) {
-  const listObjects = promisify(s3Client.listObjects.bind(s3Client))
+  const listObjects = promisifiedListObjects(s3Client)
 
-  return makeExtendSchemaPlugin(build => ({
+  return makeExtendSchemaPlugin((build: Build) => ({
     typeDefs: gql`
       type GoldilocksUploadBucketListResponse {
         IsTruncated: Boolean
@@ -62,9 +77,4 @@ function createUploadBucketListPlugin({
       },
     },
   }))
-}
-
-module.exports = {
-  createS3Client,
-  createUploadBucketListPlugin,
 }

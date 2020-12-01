@@ -38,6 +38,11 @@ jobs:
           name: Run tests
           command: npm test
 
+      - run:
+          name: Check types
+          when: always
+          command: npm run check-types
+
   lint:
     docker:
       - image: circleci/node:12

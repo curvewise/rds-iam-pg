@@ -1,9 +1,7 @@
-'use strict'
-
-const { Client } = require('pg')
-const Joi = require('joi')
+import { Client } from 'pg'
+import Joi from 'joi'
 const anonymizedFemaleViews = require('../common-assets/measured-body/anonymized_female_views.json')
-const { configSchema } = require('../src/config-schema')
+import { configSchema } from '../src/config-schema'
 
 const { databaseUrl } = Joi.attempt(
   require('config').util.toObject(),
