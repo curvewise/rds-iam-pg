@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Application } from 'express'
 import { SchemaBuilder } from 'graphile-build'
 import Joi from 'joi'
 import { postgraphile } from 'postgraphile'
@@ -11,7 +11,7 @@ import { isNullableType } from 'graphql/type/definition'
 // look for root-level queries (e.g. allSubjects)
 // and look-up by id (e.g. datasetById)
 const reNonNullRelationsPlugin = /(^all.+$)|(^.+By.*Id$)/
-function NonNullRelationsPlugin(builder: SchemaBuilder) {
+function NonNullRelationsPlugin(builder: SchemaBuilder): void {
   builder.hook('GraphQLObjectType:fields:field', (field, build, context) => {
     if (
       reNonNullRelationsPlugin.test(context.scope.fieldName) &&
@@ -27,7 +27,7 @@ function NonNullRelationsPlugin(builder: SchemaBuilder) {
   })
 }
 
-export function createApp(config: Config) {
+export function createApp(config: Config): Application {
   const {
     databaseUrl,
     auth: { enabled: authEnabled, sharedSecret },

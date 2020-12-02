@@ -1,6 +1,6 @@
 import { promisify } from 'util'
 import AWS from 'aws-sdk'
-import { Build } from 'graphile-build'
+import { Build, Plugin } from 'graphile-build'
 import { makeExtendSchemaPlugin, gql } from 'graphile-utils'
 
 export function createS3Client({
@@ -32,7 +32,7 @@ export function createUploadBucketListPlugin({
   s3Client: AWS.S3
   importBucket: string
   awsConsoleSignInUrl: string
-}) {
+}): Plugin {
   const listObjects = promisifiedListObjects(s3Client)
 
   return makeExtendSchemaPlugin((build: Build) => ({

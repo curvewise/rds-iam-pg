@@ -19,7 +19,7 @@ function timingSafeEqual(first: string, second: string): boolean {
 export function requireBasicAuth(
   app: Application,
   { sharedSecret }: { sharedSecret: string }
-) {
+): void {
   passport.use(
     new BasicStrategy((username, password, done) => {
       // During development, we don't have accounts, so we trust anyone who
