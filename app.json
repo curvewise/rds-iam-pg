@@ -7,8 +7,8 @@
       "description": "Shared authentication secret",
       "required": true
     },
-    "IMPORT_BUCKET": {
-      "description": "This is the bucket that will be used for importing body mesh geometry into the goldilocks database.",
+    "DEPLOYMENT_ENVIRONMENT": {
+      "description": "The deployment environment (e.g. pull-request, sandbox, staging, production)",
       "required": true
     },
     "AWS_ACCESS_KEY_ID": {

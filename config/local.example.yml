@@ -1,11 +1,12 @@
-# To use the common RDS database:
-# databaseUrl: postgresql://postgres:...@goldilocks-dev4.c5pfza6ihb2z.us-east-1.rds.amazonaws.com:5432/postgres
-
-# To use a PostgreSQL database on OS X (Homebrew):
+# To use a local PostgreSQL database on OS X (Homebrew):
 # databaseUrl: postgresql://localhost:5432/goldie
 
-# To use a PostgreSQL database on Fedora:
+# To use a local PostgreSQL database on Fedora:
 # databaseUrl: postgresql://postgres:postgres@localhost:5432/goldie
+
+# To use the sandbox Postgres database, copy the `DATABASE_URL` from
+# https://dashboard.heroku.com/apps/goldie-data-layer-sandbox/settings
+# databaseUrl: postgres://...:...@ec2-54-224-175-142.compute-1.amazonaws.com:5432/d98vu87n8bq42e
 
 # This is optional. When you set up the AWS CLI for local development, it will
 # create a profile, and store it in ~/.aws/credentials. This includes the
@@ -18,38 +19,28 @@
 # credentials in that profile for your AWS config. This is the same as
 # using the --profile flag in the AWS CLI.
 # For further information, see: https://aws.amazon.com/cli/
-# awsProfile: goldilocks_data_layer
-
-# This is the bucket that will be used for importing body mesh geometry into
-# the goldilocks database.
-# importBucket: goldilocks-upload
+# awsProfile: curvewise
 
 # To test authentication locally, generate a shared secret using
 # node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 # and uncomment this block.
-
+#
 # auth:
 #   enabled: true
 #   sharedSecret: '...'
 
-# This sets which AWS profiles are available in ~/.aws/credentials for testing
-# bucket permissions.
-
+# To test bucket permissions, you must create a profile for each account you
+# want to test. For each one, create additional entries in ~/.aws/credentials
+# with the appropriate access keys. You can use your personal developer
+# credentials as the `developer_test_user` or the `admin_test_user`. Then add
+# a block like this:
+#
 # test:
 #   iamUserProfilesAvailable:
-#     - admin_test_user
-#     - program_manager_test_user
 #     - developer_test_user
-#     - goldilocks_data_layer_production
-#     - goldilocks_data_layer_pull_request
-#     - goldilocks_data_layer_sandbox
-#     - goldilocks_data_layer_staging
-#     - goldilocks_data_layer_test
+#
+# The complete list of testable profiles is listed in
+# `bucket-authorization.test.ts`.
 
-# This sets which user the test is running as. Also, if this config var is set,
-# then it will load the credentials from the environment variables
-# AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY, rather than loading from
-# ~/.aws/credentials.
+# deploymentEnvironment: test-custom123
 
-# test:
-#   runningAsIamUser: goldilocks_data_layer_test

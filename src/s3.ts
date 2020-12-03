@@ -2,19 +2,7 @@ import { promisify } from 'util'
 import AWS from 'aws-sdk'
 import { Build, Plugin } from 'graphile-build'
 import { makeExtendSchemaPlugin, gql } from 'graphile-utils'
-
-export function createS3Client({
-  awsProfile,
-}: {
-  awsProfile?: string
-}): AWS.S3 {
-  const config = new AWS.Config({
-    credentials: awsProfile
-      ? new AWS.SharedIniFileCredentials({ profile: awsProfile })
-      : undefined,
-  })
-  return new AWS.S3(config)
-}
+import { importBucketForDeploymentEnvironment } from './config-conventions'
 
 export type ListBuckets = (
   request: AWS.S3.Types.ListObjectVersionsRequest
@@ -26,14 +14,17 @@ export function promisifiedListObjects(s3Client: AWS.S3): ListBuckets {
 
 export function createUploadBucketListPlugin({
   s3Client,
-  importBucket,
+  deploymentEnvironment,
   awsConsoleSignInUrl,
 }: {
   s3Client: AWS.S3
-  importBucket: string
+  deploymentEnvironment: string
   awsConsoleSignInUrl: string
 }): Plugin {
   const listObjects = promisifiedListObjects(s3Client)
+  const importBucket = importBucketForDeploymentEnvironment(
+    deploymentEnvironment
+  )
 
   return makeExtendSchemaPlugin((build: Build) => ({
     typeDefs: gql`

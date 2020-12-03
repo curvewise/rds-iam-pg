@@ -1,4 +1,6 @@
-import { createS3Client, promisifiedListObjects } from './s3'
+import AWS from 'aws-sdk'
+import { loadConfig } from './aws-common'
+import { promisifiedListObjects } from './s3'
 import chai, { expect } from 'chai'
 import Joi from 'joi'
 import { configSchema, Config } from './config-schema'
@@ -57,11 +59,9 @@ describe('Authorization', () => {
     { profile: 'goldilocks_data_layer_test', permittedBuckets: [buckets.TEST] },
   ].forEach(({ profile, permittedBuckets }) => {
     if (
-      (config.test &&
-        config.test.iamUserProfilesAvailable &&
+      (config.test?.iamUserProfilesAvailable &&
         !config.test.iamUserProfilesAvailable.includes(profile)) ||
-      (config.test &&
-        config.test.runningAsIamUser &&
+      (config.test?.runningAsIamUser &&
         config.test.runningAsIamUser !== profile)
     ) {
       console.log('skipping profile %s', profile)
@@ -69,10 +69,8 @@ describe('Authorization', () => {
     }
 
     context('When user profile is ' + profile, () => {
-      const s3Client = createS3Client(
-        config.test && config.test.runningAsIamUser
-          ? {}
-          : { awsProfile: profile }
+      const s3Client = new AWS.S3(
+        loadConfig(config.test?.runningAsIamUser ? {} : { awsProfile: profile })
       )
       const listObjects = promisifiedListObjects(s3Client)
 

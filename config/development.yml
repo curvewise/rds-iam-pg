@@ -1,7 +1,7 @@
-port: 5000
+deploymentEnvironment: test
+
 auth:
   enabled: false
-importBucket: goldilocks-upload-test
 
 test:
-  runningAsIamUser: goldilocks_data_layer_test
+  iamUserProfilesAvailable: []

@@ -8,7 +8,7 @@ export interface Config {
     sharedSecret?: string
   }
   awsProfile?: string
-  importBucket: string
+  deploymentEnvironment: string
   awsConsoleSignInUrl: string
   test?: {
     iamUserProfilesAvailable: string[]
@@ -28,7 +28,7 @@ export const configSchema = Joi.object({
     }),
   }).required(),
   awsProfile: Joi.string(),
-  importBucket: Joi.string().required(),
+  deploymentEnvironment: Joi.string().required(),
   awsConsoleSignInUrl: Joi.string()
     .uri({ scheme: ['https'] })
     .required(),

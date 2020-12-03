@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk'
 import express, { Application } from 'express'
 import { SchemaBuilder } from 'graphile-build'
 import Joi from 'joi'
@@ -5,7 +6,8 @@ import { postgraphile } from 'postgraphile'
 import cors from 'cors'
 import { requireBasicAuth, RequestWithAuth } from './auth'
 import { configSchema, Config } from './config-schema'
-import { createS3Client, createUploadBucketListPlugin } from './s3'
+import { loadConfig } from './aws-common'
+import { createUploadBucketListPlugin } from './s3'
 import { isNullableType } from 'graphql/type/definition'
 
 // look for root-level queries (e.g. allSubjects)
@@ -32,11 +34,9 @@ export function createApp(config: Config): Application {
     databaseUrl,
     auth: { enabled: authEnabled, sharedSecret },
     awsProfile,
-    importBucket,
+    deploymentEnvironment,
     awsConsoleSignInUrl,
   } = Joi.attempt(config, configSchema) as Config
-
-  const s3Client = createS3Client({ awsProfile })
 
   const app = express()
 
@@ -46,15 +46,17 @@ export function createApp(config: Config): Application {
     if (!sharedSecret) {
       throw Error('Config validation should prevent reaching this point')
     }
-    requireBasicAuth(app, { sharedSecret: sharedSecret })
+    requireBasicAuth(app, { sharedSecret })
   }
 
   app.get('/', (req, res) => res.send('Goldilocks graphql server'))
 
+  const s3Client = new AWS.S3(loadConfig({ awsProfile }))
+
   const plugins = [
     createUploadBucketListPlugin({
       s3Client,
-      importBucket,
+      deploymentEnvironment,
       awsConsoleSignInUrl,
     }),
     NonNullRelationsPlugin,

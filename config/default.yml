@@ -1,1 +1,3 @@
+port: 5000
+
 awsConsoleSignInUrl: https://curvewise.signin.aws.amazon.com/console

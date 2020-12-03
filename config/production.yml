@@ -1,2 +1,8 @@
+# `production.yml` is loaded whenever `NODE_ENV=production`. That includes all
+# environments deployed to Heroku, including pull-request, sandbox, staging,
+# and production. To provide config specific to one of those environments, set
+# e.g. `NODE_CONFIG_ENV=curvewise-production` and set config in
+# `curvewise-production.yml`.
+
 auth:
   enabled: true
