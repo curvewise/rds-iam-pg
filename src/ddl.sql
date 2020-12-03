@@ -28,7 +28,6 @@ SET default_with_oids = false;
 --
 -- Datasets
 --
-
 CREATE TYPE public.body_part_type AS ENUM (
     'body'
 );
@@ -61,19 +60,14 @@ CREATE TABLE public.datasets (
     body_part public.body_part_type NOT NULL,
     superior_direction public.axis_type,
     anterior_direction public.axis_type,
-    CONSTRAINT axes_null_together CHECK ((superior_direction IS NULL
-            AND anterior_direction IS NULL)
-        OR (superior_direction IS NOT NULL
-            AND anterior_direction IS NOT NULL)),
-    CONSTRAINT axes_orthogonal CHECK (superior_direction != anterior_direction
-        OR superior_direction IS NULL),
+    CONSTRAINT axes_null_together CHECK ((superior_direction IS NULL AND anterior_direction IS NULL) OR (superior_direction IS NOT NULL AND anterior_direction IS NOT NULL)),
+    CONSTRAINT axes_orthogonal CHECK (superior_direction != anterior_direction OR superior_direction IS NULL),
     CONSTRAINT axes_required CHECK (
-        CASE WHEN body_part = 'body' THEN
-        (superior_direction IS NOT NULL
-            AND anterior_direction IS NOT NULL)
-    ELSE
-        TRUE
-        END),
+    CASE WHEN body_part = 'body' THEN
+    (superior_direction IS NOT NULL AND anterior_direction IS NOT NULL)
+ELSE
+    TRUE
+    END),
     PRIMARY KEY (id)
 );
 
@@ -95,7 +89,6 @@ ALTER TABLE ONLY public.datasets
 --
 -- Subjects
 --
-
 CREATE TABLE public.subjects (
     id integer NOT NULL,
     name character varying(50),
@@ -147,7 +140,6 @@ SELECT
 --
 -- geometries
 --
-
 CREATE TABLE public.geometries (
     id integer NOT NULL,
     name character varying(50),
@@ -203,7 +195,6 @@ SELECT
 --
 -- jobs
 --
-
 CREATE TABLE public.jobs (
     id integer NOT NULL,
     name character varying(50),
@@ -248,7 +239,6 @@ SELECT
 --
 -- job_results
 --
-
 CREATE TABLE public.job_results (
     id integer NOT NULL,
     job_id integer NOT NULL,
@@ -308,13 +298,11 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-
 $$
 language plpgsql;
 
 CREATE TRIGGER validate_job_result_trigger
-    BEFORE INSERT
-    OR UPDATE ON public.job_results
+    BEFORE INSERT OR UPDATE ON public.job_results
     FOR EACH ROW
     EXECUTE PROCEDURE public.validate_job_result ();
 
@@ -336,7 +324,6 @@ SELECT
 --
 -- Comments
 --
-
 CREATE TABLE public.comments (
     id integer NOT NULL,
     content text,
@@ -361,7 +348,6 @@ ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 --
 -- Computed points
 --
-
 CREATE TABLE public.computed_points (
     vertex double precision[],
     id integer NOT NULL,
@@ -391,7 +377,6 @@ ALTER TABLE ONLY public.computed_points
 --
 -- Curves
 --
-
 CREATE TABLE public.curves (
     id integer NOT NULL,
     name character varying(50),
@@ -423,7 +408,6 @@ SELECT
 --
 -- Labels
 --
-
 CREATE TABLE public.labels (
     id integer NOT NULL,
     name character varying(50),
@@ -449,7 +433,6 @@ SELECT
 --
 -- Landmarks
 --
-
 CREATE TABLE public.landmarks (
     vertex double precision[],
     id integer NOT NULL,
@@ -480,7 +463,6 @@ SELECT
 --
 -- Values
 --
-
 CREATE TABLE public. "values" (
     id integer NOT NULL,
     name character varying(50),
@@ -510,7 +492,6 @@ SELECT
 --
 -- Feedback
 --
-
 CREATE TABLE public.feedback_associations (
     id integer NOT NULL,
     subject_id integer,
@@ -552,7 +533,6 @@ SELECT
 --
 -- Measured body views
 --
-
 CREATE TABLE public.measured_body_views (
     id integer NOT NULL,
     version integer,
@@ -575,10 +555,9 @@ SELECT
 --
 -- Measuremnt views
 --
-
 CREATE TABLE public.measurement_views (
     id integer NOT NULL,
-    name VARCHAR(50),
+    name varchar(50),
     index integer,
     measured_body_views_id integer,
     PRIMARY KEY (id),
@@ -600,7 +579,6 @@ SELECT
 --
 -- Body views
 --
-
 CREATE TABLE public.body_views (
     id integer NOT NULL,
     position double precision[3],
