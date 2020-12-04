@@ -52,6 +52,12 @@ CREATE TYPE public.axis_type AS ENUM (
     'neg_z'
 );
 
+CREATE TABLE public.pose_types (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE public.datasets (
     id integer NOT NULL,
     name character varying(50) NOT NULL,
@@ -116,10 +122,11 @@ SELECT
 -- Pose
 CREATE TABLE public.poses (
     id integer NOT NULL,
-    name character varying(50),
+    pose_type_id integer NOT NULL,
     subject_id integer NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT poses_subjects_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects (id)
+    CONSTRAINT poses_subjects_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects (id),
+    CONSTRAINT poses_pose_type_fkey FOREIGN KEY (pose_type_id) REFERENCES public.pose_types (id)
 );
 
 CREATE SEQUENCE public.poses_id_seq

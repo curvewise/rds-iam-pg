@@ -1,3 +1,9 @@
+COPY public.pose_types (id, name) FROM stdin;
+1	pose1
+2	pose2
+3	pose3
+\.
+
 --
 -- Datasets
 --
@@ -31,25 +37,25 @@ COPY public.subjects (id, name, gender, dataset_id) FROM stdin;
 -- Poses
 --
 
-COPY public.poses (id, name, subject_id) FROM stdin;
-1	pose1	1
-2	pose2	2
-3	pose3	3
-4	pose1	4
-5	pose2	5
-6	pose3	6
-7	pose1	7
-8	pose1	8
-9	pose1	9
-10	pose1	10
-11	pose1	11
-12	pose1	12
-13	pose2	7
-14	pose2	8
-15	pose2	9
-16	pose2	10
-17	pose2	11
-18	pose2	12
+COPY public.poses (id, pose_type_id, subject_id) FROM stdin;
+1	1	1
+2	2	2
+3	3	3
+4	1	4
+5	2	5
+6	3	6
+7	1	7
+8	1	8
+9	1	9
+10	1	10
+11	1	11
+12	1	12
+13	2	7
+14	2	8
+15	2	9
+16	2	10
+17	2	11
+18	2	12
 \.
 
 --
