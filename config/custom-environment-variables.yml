@@ -3,4 +3,7 @@ databaseUrl: DATABASE_URL
 deploymentEnvironment: DEPLOYMENT_ENVIRONMENT
 auth:
   sharedSecret: SHARED_SECRET
+graphileWorkerDb:
+  hostname: RDS_GRAPHILE_WORKER_PG_HOSTNAME
+  port: RDS_GRAPHILE_WORKER_PG_PORT
 awsProfile: AWS_PROFILE

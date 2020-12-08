@@ -13,6 +13,15 @@ sudo dnf install perl-autodie.noarch perl-open.noarch
 This is needed to get the `format:sql:check` and `format:sql:fix` npm scripts
 to work.
 
+### Github Package Registry authorization
+
+1. Create a GitHub Personal Access Token with the `read:packages` scope.
+2. Save the token in `~/.npmrc`:
+   ```
+   //npm.pkg.github.com/:_authToken=your-token-here
+   ```
+3. Run `npm ci` to check that it's working properly.
+
 ### Configuration
 
 1. Copy `config/local.example.yml` to `config/local.yml`.
@@ -53,7 +62,7 @@ relationships. This is done in `src/ddl.sql`.
 
 Sample data exists and can be added in either of two places: SQL or
 JSON/JavaScript. The SQL is in `src/seed_data.sql` and the JavaScript is in
-`scripts/load-seed-data.js`.
+`src/scripts/load-seed-data.js`.
 
 Apply them to your database by running `npm run load-seed-data`. If the
 server is running, it will take note of the changes and automatically expose

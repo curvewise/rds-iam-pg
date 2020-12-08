@@ -9,6 +9,8 @@ import { configSchema, Config } from './config-schema'
 import { loadConfig } from './aws-common'
 import { createUploadBucketListPlugin } from './s3'
 import { isNullableType } from 'graphql/type/definition'
+import { createRdsPgPool, startGraphileWorker } from './graphile-worker'
+import { graphileWorkerPostgresUserForDeploymentEnvironment } from './config-conventions'
 
 // look for root-level queries (e.g. allSubjects)
 // and look-up by id (e.g. datasetById)
@@ -36,6 +38,7 @@ export function createApp(config: Config): Application {
     awsProfile,
     deploymentEnvironment,
     awsConsoleSignInUrl,
+    graphileWorkerDb: { region: awsRegion, hostname: pgHostname, port: pgPort },
   } = Joi.attempt(config, configSchema) as Config
 
   const app = express()
@@ -78,6 +81,21 @@ export function createApp(config: Config): Application {
       }),
     })
   )
+
+  const graphileWorkerPgPool = createRdsPgPool({
+    awsRegion,
+    awsProfile,
+    address: {
+      host: pgHostname,
+      port: pgPort,
+      user: graphileWorkerPostgresUserForDeploymentEnvironment(
+        deploymentEnvironment
+      ),
+      database: deploymentEnvironment,
+    },
+  })
+
+  startGraphileWorker({ pool: graphileWorkerPgPool })
 
   return app
 }

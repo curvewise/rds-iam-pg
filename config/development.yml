@@ -3,5 +3,8 @@ deploymentEnvironment: test
 auth:
   enabled: false
 
+graphileWorkerDb:
+  hostname: goldie-graphile-worker-dev.cgbhonktiktk.us-east-1.rds.amazonaws.com
+
 test:
   iamUserProfilesAvailable: []

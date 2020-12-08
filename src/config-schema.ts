@@ -10,6 +10,11 @@ export interface Config {
   awsProfile?: string
   deploymentEnvironment: string
   awsConsoleSignInUrl: string
+  graphileWorkerDb: {
+    region: string
+    hostname: string
+    port: number
+  }
   test?: {
     iamUserProfilesAvailable: string[]
     runningAsIamUser?: string
@@ -35,5 +40,10 @@ export const configSchema = Joi.object({
   test: Joi.object({
     iamUserProfilesAvailable: Joi.array().items(Joi.string()),
     runningAsIamUser: [Joi.string(), null],
+  }),
+  graphileWorkerDb: Joi.object({
+    region: Joi.string().required(),
+    hostname: Joi.string().required(),
+    port: Joi.number().required(),
   }),
 }).required()

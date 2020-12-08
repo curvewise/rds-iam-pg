@@ -27,6 +27,10 @@ jobs:
             psql $DATABASE_URL -c "SELECT version();"
 
       - run:
+          name: Configure credentials for GitHub Package Registry
+          command: npm run configure-github-package-registry
+
+      - run:
           name: Install Node dependencies
           command: npm ci
 
@@ -53,6 +57,10 @@ jobs:
       - checkout
 
       - run:
+          name: Configure credentials for GitHub Package Registry
+          command: npm run configure-github-package-registry
+
+      - run:
           name: Install Node dependencies
           command: npm ci
 
@@ -68,6 +76,10 @@ jobs:
       - checkout
 
       - run:
+          name: Configure credentials for GitHub Package Registry
+          command: npm run configure-github-package-registry
+
+      - run:
           name: Install Node dependencies
           command: npm ci
 
@@ -80,9 +92,12 @@ workflows:
 
   on-commit:
     jobs:
-      - test
-      - lint
-      - format
+      - test:
+          context: 'GitHub - Read packages'
+      - lint:
+          context: 'GitHub - Read packages'
+      - format:
+          context: 'GitHub - Read packages'
 
   daily:
     triggers:
@@ -92,6 +107,9 @@ workflows:
             branches:
               only: main
     jobs:
-      - test
-      - lint
-      - format
+      - test:
+          context: 'GitHub - Read packages'
+      - lint:
+          context: 'GitHub - Read packages'
+      - format:
+          context: 'GitHub - Read packages'

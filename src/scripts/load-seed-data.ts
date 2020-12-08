@@ -1,8 +1,8 @@
 import { Client } from 'pg'
 import Joi from 'joi'
-import { configSchema } from '../src/config-schema'
+import { configSchema } from '../config-schema'
 
-const anonymizedFemaleViews = require('../common-assets/measured-body/anonymized_female_views.json')
+const anonymizedFemaleViews = require('../../common-assets/measured-body/anonymized_female_views.json')
 
 const { databaseUrl } = Joi.attempt(
   require('config').util.toObject(),

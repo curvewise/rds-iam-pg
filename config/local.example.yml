@@ -44,3 +44,5 @@
 
 # deploymentEnvironment: test-custom123
 
+# graphileWorkerDb:
+#  hostname: goldie-graphile-worker-dev.cgbhonktiktk.us-east-1.rds.amazonaws.com

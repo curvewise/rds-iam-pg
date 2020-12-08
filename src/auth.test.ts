@@ -1,8 +1,9 @@
 import { expect } from 'chai'
 import { request } from 'graphql-request'
+import { gql } from 'graphile-utils'
 import { createTestServer } from './server-test-helpers'
 
-const listDatasetQuery = `
+const listDatasetQuery = gql`
   query ListDatasets {
     allDatasets {
       nodes {

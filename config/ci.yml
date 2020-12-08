@@ -3,6 +3,9 @@ deploymentEnvironment: test
 auth:
   enabled: false
 
+graphileWorkerDb:
+  hostname: goldie-graphile-worker-dev.cgbhonktiktk.us-east-1.rds.amazonaws.com
+
 # This sets which user the test is running as. When this config var is set, it
 # will load the credentials from the environment variables
 # AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY, rather than from

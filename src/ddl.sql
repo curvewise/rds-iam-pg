@@ -613,3 +613,11 @@ SELECT
 ALTER TABLE ONLY public.body_views
     ALTER COLUMN id SET DEFAULT nextval('public.body_views_id_seq'::regclass);
 
+--
+-- Imported files
+--
+CREATE TABLE public.checked_uploads (
+    e_tag character varying(32) PRIMARY KEY,
+    is_valid_obj boolean NOT NULL
+);
+

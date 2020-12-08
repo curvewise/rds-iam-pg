@@ -13,18 +13,16 @@ export interface TestServer {
   server: http.Server
   url: string
   close(): Promise<void>
+  config: Config
 }
 
 export async function createTestServer(
   config: Partial<Config> = {}
-): TestServer {
-  const mergedConfig = merge(
-    require('config').util.toObject() as Config,
-    config
-  )
-  if (!mergedConfig.port) {
-    mergedConfig.port = await portfinder.getPortPromise()
-  }
+): Promise<TestServer> {
+  const mergedConfig = merge(require('config').util.toObject() as Config, {
+    ...config,
+    port: await portfinder.getPortPromise(),
+  })
 
   const app = createApp(mergedConfig)
 
@@ -41,5 +39,5 @@ export async function createTestServer(
     await server.close()
   }
 
-  return { app, server, url, close }
+  return { app, server, url, close, config: mergedConfig }
 }
