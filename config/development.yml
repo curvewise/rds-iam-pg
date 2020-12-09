@@ -1,4 +1,4 @@
-deploymentEnvironment: test
+deploymentEnvironment: sandbox
 
 auth:
   enabled: false
