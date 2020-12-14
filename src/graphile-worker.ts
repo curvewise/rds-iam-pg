@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { run, Runner } from 'graphile-worker'
 import { createS3CheckObjTask } from './tasks/s3-check-obj'
+import { getSharedIniFileCredentialsFromAwsProfileIfDefined } from './aws-common'
 
 export interface PostgresAddress {
   host: string
@@ -15,14 +16,14 @@ export interface PostgresAddress {
 export function createRdsPgPool({
   awsRegion,
   address: { host, port, user, database },
-  awsProfile = 'default',
+  awsProfile,
 }: {
   awsRegion: string
   awsProfile?: string
   address: PostgresAddress
 }): Pool {
   const signer = new AWS.RDS.Signer({
-    credentials: new AWS.SharedIniFileCredentials({ profile: awsProfile }),
+    credentials: getSharedIniFileCredentialsFromAwsProfileIfDefined(awsProfile),
     region: awsRegion,
     hostname: host,
     port,
