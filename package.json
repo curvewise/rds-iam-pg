@@ -27,7 +27,7 @@
   "author": "Curvewise",
   "license": "UNLICENSED",
   "dependencies": {
-    "@curvewise/armscyence-types-s3-check-obj": "1.0.2",
+    "@curvewise/armscyence-types-s3-check-obj": "1.0.3",
     "ajv": "^6.12.6",
     "aws-sdk": "^2.807.0",
     "chai-as-promised": "^7.1.1",
