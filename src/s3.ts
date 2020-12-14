@@ -1,16 +1,7 @@
-import { promisify } from 'util'
 import AWS from 'aws-sdk'
 import { Build, Plugin } from 'graphile-build'
 import { makeExtendSchemaPlugin, gql } from 'graphile-utils'
 import { importBucketForDeploymentEnvironment } from './config-conventions'
-
-export type ListBuckets = (
-  request: AWS.S3.Types.ListObjectVersionsRequest
-) => Promise<AWS.S3.Types.ListObjectsOutput>
-
-export function promisifiedListObjects(s3Client: AWS.S3): ListBuckets {
-  return promisify(s3Client.listObjects.bind(s3Client))
-}
 
 export function createUploadBucketListPlugin({
   s3Client,
@@ -21,7 +12,6 @@ export function createUploadBucketListPlugin({
   deploymentEnvironment: string
   awsConsoleSignInUrl: string
 }): Plugin {
-  const listObjects = promisifiedListObjects(s3Client)
   const importBucket = importBucketForDeploymentEnvironment(
     deploymentEnvironment
   )
@@ -59,7 +49,7 @@ export function createUploadBucketListPlugin({
     resolvers: {
       Query: {
         uploadBucketList: async () =>
-          await listObjects({ Bucket: importBucket }),
+          await s3Client.listObjects({ Bucket: importBucket }).promise(),
         serverSettings: () => ({
           uploadBucketName: importBucket,
           uploadBucketS3ConsoleUploadUrl: `https://s3.console.aws.amazon.com/s3/upload/${importBucket}?region=us-east-1`,

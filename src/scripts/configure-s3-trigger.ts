@@ -1,4 +1,3 @@
-import { promisify } from 'util'
 import AWS from 'aws-sdk'
 import Joi from 'joi'
 import { loadConfig } from '../aws-common'
@@ -17,16 +16,6 @@ const { deploymentEnvironment, awsProfile } = Joi.attempt(
   require('config').util.toObject(),
   configSchema
 ) as Config
-
-export type PutBucketNotificationConfiguration = (
-  request: AWS.S3.Types.PutBucketNotificationConfigurationRequest
-) => Promise<{}>
-
-export function promisifiedPutBucketNotificationConfiguration(
-  s3Client: AWS.S3
-): PutBucketNotificationConfiguration {
-  return promisify(s3Client.putBucketNotificationConfiguration.bind(s3Client))
-}
 
 function mungedVersion(version: string): string {
   return `v${version.replace(/\./g, '_')}`
@@ -76,7 +65,7 @@ async function configureTrigger(version: string): Promise<void> {
     'Bucket notification configuration',
     JSON.stringify(request, undefined, 2)
   )
-  await promisifiedPutBucketNotificationConfiguration(s3Client)(request)
+  await s3Client.putBucketNotificationConfiguration(request).promise()
 }
 
 async function main(): Promise<void> {

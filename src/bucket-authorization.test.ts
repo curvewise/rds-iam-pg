@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk'
 import { loadConfig } from './aws-common'
-import { promisifiedListObjects } from './s3'
 import chai, { expect } from 'chai'
 import Joi from 'joi'
 import { configSchema, Config } from './config-schema'
@@ -72,20 +71,20 @@ describe('Authorization', () => {
       const s3Client = new AWS.S3(
         loadConfig(config.test?.runningAsIamUser ? {} : { awsProfile: profile })
       )
-      const listObjects = promisifiedListObjects(s3Client)
 
       Object.values(buckets).forEach(bucketName => {
         // TODO: test other actions
         if (permittedBuckets.includes(bucketName)) {
           // permitted
           it('user can access bucket ' + bucketName, async () => {
-            await expect(listObjects({ Bucket: bucketName })).to.be.fulfilled
+            await expect(s3Client.listObjects({ Bucket: bucketName }).promise())
+              .to.be.fulfilled
           })
         } else {
           // not permitted
           it('user cannot access bucket ' + bucketName, async () => {
             await expect(
-              listObjects({ Bucket: bucketName })
+              s3Client.listObjects({ Bucket: bucketName }).promise()
             ).to.be.rejectedWith('Access Denied')
           })
         }
