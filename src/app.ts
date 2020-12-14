@@ -65,22 +65,21 @@ export function createApp(config: Config): Application {
     NonNullRelationsPlugin,
   ]
 
-  app.use(
-    // these options are documented here:
-    // https://www.graphile.org/postgraphile/usage-cli/
-    postgraphile(databaseUrl, 'public', {
-      watchPg: true,
-      graphiql: true,
-      enhanceGraphiql: true,
-      appendPlugins: plugins,
-      setofFunctionsContainNulls: false,
-      // Expose the username to PostgreSQL.
-      // https://www.graphile.org/postgraphile/usage-library/#exposing-http-request-data-to-postgresql
-      pgSettings: async (req: RequestWithAuth) => ({
-        'user.id': req.user ? req.user.username : 'unknown',
-      }),
-    })
-  )
+  // these options are documented here:
+  // https://www.graphile.org/postgraphile/usage-cli/
+  const postgraphileHandler = postgraphile(databaseUrl, 'public', {
+    watchPg: true,
+    graphiql: true,
+    enhanceGraphiql: true,
+    appendPlugins: plugins,
+    setofFunctionsContainNulls: false,
+    // Expose the username to PostgreSQL.
+    // https://www.graphile.org/postgraphile/usage-library/#exposing-http-request-data-to-postgresql
+    pgSettings: async (req: RequestWithAuth) => ({
+      'user.id': req.user ? req.user.username : 'unknown',
+    }),
+  })
+  app.use(postgraphileHandler)
 
   const graphileWorkerPgPool = createRdsPgPool({
     awsRegion,
@@ -95,7 +94,10 @@ export function createApp(config: Config): Application {
     },
   })
 
-  startGraphileWorker({ pool: graphileWorkerPgPool })
+  startGraphileWorker({
+    graphileWorkerPgPool,
+    postgraphilePgPool: postgraphileHandler.pgPool,
+  })
 
   return app
 }

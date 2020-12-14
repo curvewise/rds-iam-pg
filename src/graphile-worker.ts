@@ -56,18 +56,20 @@ export function createRdsPgPool({
 }
 
 export async function startGraphileWorker({
-  pool,
+  graphileWorkerPgPool,
+  postgraphilePgPool,
 }: {
-  pool: Pool
+  graphileWorkerPgPool: Pool
+  postgraphilePgPool: Pool
 }): Promise<Runner> {
   return run({
-    pgPool: pool,
+    pgPool: graphileWorkerPgPool,
     concurrency: 5,
     // Install signal handlers for graceful shutdown on SIGINT, SIGTERM, etc.
     noHandleSignals: false,
     pollInterval: 1000,
     taskList: {
-      's3-check-obj': createS3CheckObjTask(pool),
+      's3-check-obj': createS3CheckObjTask(postgraphilePgPool),
     },
   })
 }
