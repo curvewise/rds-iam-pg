@@ -40,25 +40,9 @@ function createMockS3CheckObjResponse({
     runtime_info: {},
     success: true,
     result: {
-      version: 1,
-      s3: {
-        s3SchemaVersion: '1.0',
-        configurationId: 'testConfigRule',
-        bucket: {
-          name: 'mybucket',
-          ownerIdentity: {
-            principalId: 'A3NL1KOZZKExample',
-          },
-          arn: 'arn:aws:s3:::mybucket',
-        },
-        object: {
-          key: 'HappyFace.jpg',
-          size: 1024,
-          eTag,
-          versionId: '096fKKXTRTtl3on89kfVO.nfljtsv6qko',
-          sequencer: '0055AED6DCD90281E5',
-        },
-      },
+      bucket: 'mybucket',
+      key: 'HappyFace.jpg',
+      eTag,
       checks: { isValidObj },
     },
     error: null,

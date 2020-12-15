@@ -1,7 +1,7 @@
 import Ajv from 'ajv'
 import { JobHelpers } from 'graphile-worker'
 import { Pool } from 'pg'
-import { S3CheckObjResponse_v1 as S3CheckObjResponse } from '@curvewise/armscyence-types-s3-check-obj'
+import { S3CheckObjResponse } from '@curvewise/armscyence-types-s3-check-obj'
 
 const ajv = new Ajv({ removeAdditional: true }).addSchema(
   require('@curvewise/armscyence-types-s3-check-obj/generated/schema.json')
@@ -12,7 +12,7 @@ export function createS3CheckObjTask(pool: Pool) {
     payload: unknown,
     { logger }: JobHelpers
   ): Promise<void> {
-    if (!ajv.validate('#/definitions/S3CheckObjResponse_v1', payload)) {
+    if (!ajv.validate('#/definitions/S3CheckObjResponse', payload)) {
       logger.error(ajv.errorsText(ajv.errors))
       return
     }
@@ -28,9 +28,8 @@ export function createS3CheckObjTask(pool: Pool) {
     const {
       result: {
         checks: { isValidObj },
-        s3: {
-          object: { key, eTag },
-        },
+        key,
+        eTag,
       },
     } = validated
 
