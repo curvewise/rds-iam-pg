@@ -1,15 +1,16 @@
 import { Client } from 'pg'
 import Joi from 'joi'
-import { configSchema } from '../config-schema'
+import { configSchema, Config } from '../config-schema'
+import { poolConfig } from '../postgraphile-common'
 
 const anonymizedFemaleViews = require('../../common-assets/measured-body/anonymized_female_views.json')
 
-const { databaseUrl } = Joi.attempt(
+const { database } = Joi.attempt(
   require('config').util.toObject(),
   configSchema
-)
+) as Config
 
-const client = new Client({ connectionString: databaseUrl })
+const client = new Client(poolConfig(database))
 ;(async () => {
   await client.connect()
   const measuredBodyViewsId = 1

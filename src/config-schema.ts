@@ -2,7 +2,10 @@ import Joi from 'joi'
 
 export interface Config {
   port: number
-  databaseUrl: string
+  database: {
+    url: string
+    allowSelfSigned: boolean
+  }
   auth: {
     enabled: boolean
     sharedSecret?: string
@@ -23,7 +26,10 @@ export interface Config {
 
 export const configSchema = Joi.object({
   port: Joi.number().required(),
-  databaseUrl: Joi.string().uri({ scheme: ['postgres', 'postgresql'] }),
+  database: Joi.object({
+    url: Joi.string().uri({ scheme: ['postgres', 'postgresql'] }),
+    allowSelfSigned: Joi.boolean().required(),
+  }).required(),
   auth: Joi.object({
     enabled: Joi.boolean().required(),
     sharedSecret: Joi.alternatives().conditional('enabled', {

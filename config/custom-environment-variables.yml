@@ -1,5 +1,6 @@
 port: PORT
-databaseUrl: DATABASE_URL
+database:
+  url: DATABASE_URL
 deploymentEnvironment: DEPLOYMENT_ENVIRONMENT
 auth:
   sharedSecret: SHARED_SECRET

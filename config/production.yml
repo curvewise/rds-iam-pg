@@ -6,3 +6,7 @@
 
 auth:
   enabled: true
+
+database:
+  # https://devcenter.heroku.com/articles/heroku-postgresql#connecting-in-node-js
+  allowSelfSigned: true

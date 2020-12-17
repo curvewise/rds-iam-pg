@@ -11,6 +11,7 @@ import { createUploadBucketListPlugin } from './s3'
 import { isNullableType } from 'graphql/type/definition'
 import { createRdsPgPool, startGraphileWorker } from './graphile-worker'
 import { graphileWorkerPostgresUserForDeploymentEnvironment } from './config-conventions'
+import { poolConfig } from './postgraphile-common'
 
 // look for root-level queries (e.g. allSubjects)
 // and look-up by id (e.g. datasetById)
@@ -33,7 +34,7 @@ function NonNullRelationsPlugin(builder: SchemaBuilder): void {
 
 export function createApp(config: Config): Application {
   const {
-    databaseUrl,
+    database,
     auth: { enabled: authEnabled, sharedSecret },
     awsProfile,
     deploymentEnvironment,
@@ -67,7 +68,7 @@ export function createApp(config: Config): Application {
 
   // these options are documented here:
   // https://www.graphile.org/postgraphile/usage-cli/
-  const postgraphileHandler = postgraphile(databaseUrl, 'public', {
+  const postgraphileHandler = postgraphile(poolConfig(database), 'public', {
     watchPg: true,
     graphiql: true,
     enhanceGraphiql: true,

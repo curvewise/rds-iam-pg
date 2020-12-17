@@ -6,6 +6,7 @@ import { JobHelpers, Logger } from 'graphile-worker'
 import { request } from 'graphql-request'
 import { Pool } from 'pg'
 import { createTestServer } from '../server-test-helpers'
+import { poolConfig } from '../postgraphile-common'
 import { createS3CheckObjTask } from './s3-check-obj'
 
 const checkedUploadByETagQuery = gql`
@@ -63,25 +64,21 @@ function createMockFailureResponse(): S3CheckObjResponse {
 }
 
 describe('s3-check-obj task', () => {
-  let url: string, close: () => Promise<void>, databaseUrl: string
+  let url: string, close: () => Promise<void>, pool: Pool
   before(async () => {
+    let database
     ;({
       url,
       close,
-      config: { databaseUrl },
+      config: { database },
     } = await createTestServer({ auth: { enabled: false } }))
+    pool = new Pool(poolConfig(database))
   })
   after(async () => {
     if (close) {
       close()
+      close = undefined
     }
-  })
-
-  let pool: Pool
-  before(() => {
-    pool = new Pool({ connectionString: databaseUrl })
-  })
-  after(() => {
     if (pool) {
       pool.end()
       pool = undefined

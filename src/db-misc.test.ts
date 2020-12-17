@@ -4,19 +4,20 @@
 // verify the state
 // attempt to insert a row that we know will fail
 
-import { Client } from 'pg'
-import Joi from 'joi'
-import { configSchema } from './config-schema'
 import chai, { assert } from 'chai'
+import Joi from 'joi'
+import { Client } from 'pg'
+import { configSchema, Config } from './config-schema'
+import { poolConfig } from './postgraphile-common'
 
 chai.use(require('chai-as-promised'))
 
-const { databaseUrl } = Joi.attempt(
+const { database } = Joi.attempt(
   require('config').util.toObject(),
   configSchema
-)
+) as Config
 
-const client = new Client({ connectionString: databaseUrl })
+const client = new Client(poolConfig(database))
 describe('Insertion into job_results table should fail', () => {
   context(
     'When user attempts to insert a new row into the job_results table, and a row already exists in that table for that job, and that row contains a geometry that is associated with a different dataset',

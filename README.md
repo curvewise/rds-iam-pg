@@ -25,7 +25,7 @@ to work.
 ### Configuration
 
 1. Copy `config/local.example.yml` to `config/local.yml`.
-2. Uncomment one of the examples for `databaseUrl`.
+2. Uncomment one of the examples for `database.url`.
 3. To test with authentication, generate a shared secret and set it in
    `config/local.yml`.
 
