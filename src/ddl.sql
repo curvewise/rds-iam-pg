@@ -86,9 +86,6 @@ CREATE SEQUENCE public.datasets_id_seq
 
 ALTER SEQUENCE public.datasets_id_seq OWNED BY public.datasets.id;
 
-SELECT
-    pg_catalog.setval('public.datasets_id_seq', 1, true);
-
 ALTER TABLE ONLY public.datasets
     ALTER COLUMN id SET DEFAULT nextval('public.datasets_id_seq'::regclass);
 
@@ -116,9 +113,6 @@ ALTER TABLE ONLY public.subjects
 
 ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 
-SELECT
-    pg_catalog.setval('public.subjects_id_seq', 1, true);
-
 -- Pose
 CREATE TABLE public.poses (
     id integer NOT NULL,
@@ -140,9 +134,6 @@ ALTER TABLE ONLY public.poses
     ALTER COLUMN id SET DEFAULT nextval('public.poses_id_seq'::regclass);
 
 ALTER SEQUENCE public.poses_id_seq OWNED BY public.poses.id;
-
-SELECT
-    pg_catalog.setval('public.poses_id_seq', 1, true);
 
 --
 -- geometries
@@ -196,9 +187,6 @@ ALTER TABLE ONLY public.geometries
 
 ALTER SEQUENCE public.geometries_id_seq OWNED BY public.geometries.id;
 
-SELECT
-    pg_catalog.setval('public.geometries_id_seq', 1, true);
-
 --
 -- jobs
 --
@@ -239,9 +227,6 @@ ALTER TABLE ONLY public.jobs
     ALTER COLUMN id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
 
 ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
-
-SELECT
-    pg_catalog.setval('public.jobs_id_seq', 1, true);
 
 --
 -- job_results
@@ -325,9 +310,6 @@ ALTER TABLE ONLY public.jobs
 
 ALTER SEQUENCE public.job_results_id_seq OWNED BY public.jobs.id;
 
-SELECT
-    pg_catalog.setval('public.job_results_id_seq', 1, true);
-
 --
 -- Comments
 --
@@ -343,9 +325,6 @@ CREATE SEQUENCE public.comments_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-SELECT
-    pg_catalog.setval('public.comments_id_seq', 1, false);
 
 ALTER TABLE ONLY public.comments
     ALTER COLUMN id SET DEFAULT nextval('public.comments_id_seq'::regclass);
@@ -374,9 +353,6 @@ CREATE SEQUENCE public.computed_points_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.computed_points_id_seq OWNED BY public.computed_points.id;
-
-SELECT
-    pg_catalog.setval('public.computed_points_id_seq', 1, false);
 
 ALTER TABLE ONLY public.computed_points
     ALTER COLUMN id SET DEFAULT nextval('public.computed_points_id_seq'::regclass);
@@ -409,9 +385,6 @@ ALTER TABLE ONLY public.curves
 
 ALTER SEQUENCE public.curves_id_seq OWNED BY public.curves.id;
 
-SELECT
-    pg_catalog.setval('public.curves_id_seq', 4, true);
-
 --
 -- Labels
 --
@@ -433,9 +406,6 @@ ALTER TABLE ONLY public.labels
     ALTER COLUMN id SET DEFAULT nextval('public.labels_id_seq'::regclass);
 
 ALTER SEQUENCE public.labels_id_seq OWNED BY public.labels.id;
-
-SELECT
-    pg_catalog.setval('public.labels_id_seq', 3, true);
 
 --
 -- Landmarks
@@ -464,9 +434,6 @@ ALTER TABLE ONLY public.landmarks
 
 ALTER SEQUENCE public.landmarks_id_seq OWNED BY public.landmarks.id;
 
-SELECT
-    pg_catalog.setval('public.landmarks_id_seq', 9, true);
-
 --
 -- Values
 --
@@ -492,9 +459,6 @@ ALTER TABLE ONLY public. "values"
     ALTER COLUMN id SET DEFAULT nextval('public.values_id_seq'::regclass);
 
 ALTER SEQUENCE public.values_id_seq OWNED BY public. "values".id;
-
-SELECT
-    pg_catalog.setval('public.values_id_seq', 4, true);
 
 --
 -- Feedback
@@ -534,9 +498,6 @@ ALTER SEQUENCE public.feedback_associations_id_seq OWNED BY public.feedback_asso
 ALTER TABLE ONLY public.feedback_associations
     ALTER COLUMN id SET DEFAULT nextval('public.feedback_associations_id_seq'::regclass);
 
-SELECT
-    pg_catalog.setval('public.feedback_associations_id_seq', 1, false);
-
 --
 -- Measured body views
 --
@@ -556,8 +517,8 @@ CREATE SEQUENCE public.measured_body_views_id_seq
 
 ALTER SEQUENCE public.measured_body_views_id_seq OWNED BY public.measured_body_views.id;
 
-SELECT
-    pg_catalog.setval('public.measured_body_views_id_seq', 1, false);
+ALTER TABLE ONLY public.measured_body_views
+    ALTER COLUMN id SET DEFAULT nextval('public.measured_body_views_id_seq'::regclass);
 
 --
 -- Measuremnt views
@@ -580,8 +541,8 @@ CREATE SEQUENCE public.measurement_views_id_seq
 
 ALTER SEQUENCE public.measurement_views_id_seq OWNED BY public.measurement_views.id;
 
-SELECT
-    pg_catalog.setval('public.measurement_views_id_seq', 1, false);
+ALTER TABLE ONLY public.measurement_views
+    ALTER COLUMN id SET DEFAULT nextval('public.measurement_views_id_seq'::regclass);
 
 --
 -- Body views
@@ -606,9 +567,6 @@ CREATE SEQUENCE public.body_views_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.body_views_id_seq OWNED BY public.body_views.id;
-
-SELECT
-    pg_catalog.setval('public.body_views_id_seq', 1, false);
 
 ALTER TABLE ONLY public.body_views
     ALTER COLUMN id SET DEFAULT nextval('public.body_views_id_seq'::regclass);
