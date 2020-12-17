@@ -576,6 +576,8 @@ ALTER TABLE ONLY public.body_views
 --
 CREATE TABLE public.checked_uploads (
     e_tag character varying(32) PRIMARY KEY,
-    is_valid_obj boolean NOT NULL
+    is_valid_obj boolean NOT NULL,
+    predicted_body_units public.units_type,
+    topology public.topology_type
 );
 

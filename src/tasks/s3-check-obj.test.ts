@@ -1,5 +1,9 @@
 import crypto from 'crypto'
-import { S3CheckObjResponse_v1 as S3CheckObjResponse } from '@curvewise/armscyence-types-s3-check-obj'
+import {
+  S3CheckObjResponse,
+  BodyUnits,
+  KnownTopology,
+} from '@curvewise/armscyence-types-s3-check-obj'
 import { expect } from 'chai'
 import { gql } from 'graphile-utils'
 import { JobHelpers, Logger } from 'graphile-worker'
@@ -14,6 +18,8 @@ const checkedUploadByETagQuery = gql`
     checkedUploadByETag(eTag: $eTag) {
       eTag
       isValidObj
+      predictedBodyUnits
+      topology
     }
   }
 `
@@ -31,9 +37,13 @@ function createMockJobHelpers(): JobHelpers {
 function createMockS3CheckObjResponse({
   eTag,
   isValidObj,
+  topology,
+  predictedBodyUnits,
 }: {
   eTag: string
   isValidObj: boolean
+  topology: KnownTopology | null
+  predictedBodyUnits: BodyUnits | null
 }): S3CheckObjResponse {
   return {
     start_time: '...',
@@ -44,7 +54,7 @@ function createMockS3CheckObjResponse({
       bucket: 'mybucket',
       key: 'HappyFace.jpg',
       eTag,
-      checks: { isValidObj },
+      checks: { isValidObj, topology, predictedBodyUnits },
     },
     error: null,
     error_origin: null,
@@ -95,13 +105,25 @@ describe('s3-check-obj task', () => {
 
     it('inserts it in the database', async () => {
       await task(
-        createMockS3CheckObjResponse({ eTag, isValidObj: true }),
+        createMockS3CheckObjResponse({
+          eTag,
+          isValidObj: true,
+          topology: 'meshcapade-sm4-mid',
+          predictedBodyUnits: 'cm',
+        }),
         createMockJobHelpers()
       )
 
       expect(
         await request(url, checkedUploadByETagQuery, { eTag })
-      ).to.deep.equal({ checkedUploadByETag: { eTag, isValidObj: true } })
+      ).to.deep.equal({
+        checkedUploadByETag: {
+          eTag,
+          isValidObj: true,
+          topology: 'MESHCAPADE_SM4',
+          predictedBodyUnits: 'CM',
+        },
+      })
     })
   })
 
@@ -111,25 +133,49 @@ describe('s3-check-obj task', () => {
     it('updates the entry in the database', async () => {
       // Set up.
       await task(
-        createMockS3CheckObjResponse({ eTag, isValidObj: true }),
+        createMockS3CheckObjResponse({
+          eTag,
+          isValidObj: true,
+          topology: 'meshcapade-sm4-mid',
+          predictedBodyUnits: 'cm',
+        }),
         createMockJobHelpers()
       )
 
       // Confidence check.
       expect(
         await request(url, checkedUploadByETagQuery, { eTag })
-      ).to.deep.equal({ checkedUploadByETag: { eTag, isValidObj: true } })
+      ).to.deep.equal({
+        checkedUploadByETag: {
+          eTag,
+          isValidObj: true,
+          topology: 'MESHCAPADE_SM4',
+          predictedBodyUnits: 'CM',
+        },
+      })
 
       // Act.
       await task(
-        createMockS3CheckObjResponse({ eTag, isValidObj: false }),
+        createMockS3CheckObjResponse({
+          eTag,
+          isValidObj: false,
+          topology: null,
+          predictedBodyUnits: 'mm',
+        }),
         createMockJobHelpers()
       )
 
       // Assert.
       expect(
         await request(url, checkedUploadByETagQuery, { eTag })
-      ).to.deep.equal({ checkedUploadByETag: { eTag, isValidObj: false } })
+      ).to.deep.equal({
+        checkedUploadByETag: {
+          eTag,
+          isValidObj: false,
+          topology: null,
+          predictedBodyUnits: 'MM',
+        },
+      })
     })
   })
 
