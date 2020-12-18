@@ -4,6 +4,12 @@ export function importBucketForDeploymentEnvironment(
   return `goldilocks-upload-${deploymentEnvironment}`
 }
 
+export function storageBucketForDeploymentEnvironment(
+  deploymentEnvironment: string
+): string {
+  return `goldilocks-storage-${deploymentEnvironment}`
+}
+
 export function graphileWorkerPostgresUserForDeploymentEnvironment(
   deploymentEnvironment: string
 ): string {

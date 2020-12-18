@@ -8,6 +8,7 @@ import { requireBasicAuth, RequestWithAuth } from './auth'
 import { configSchema, Config } from './config-schema'
 import { loadConfig } from './aws-common'
 import { createUploadBucketListPlugin } from './s3'
+import { createImportGeometryPlugin } from './import'
 import { isNullableType } from 'graphql/type/definition'
 import { createRdsPgPool, startGraphileWorker } from './graphile-worker'
 import { graphileWorkerPostgresUserForDeploymentEnvironment } from './config-conventions'
@@ -62,6 +63,10 @@ export function createApp(config: Config): Application {
       s3Client,
       deploymentEnvironment,
       awsConsoleSignInUrl,
+    }),
+    createImportGeometryPlugin({
+      s3Client,
+      deploymentEnvironment,
     }),
     NonNullRelationsPlugin,
   ]

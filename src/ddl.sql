@@ -98,7 +98,8 @@ CREATE TABLE public.subjects (
     gender character (1),
     dataset_id integer NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT subjects_dataset_fkey FOREIGN KEY (dataset_id) REFERENCES public.datasets (id)
+    CONSTRAINT subjects_dataset_fkey FOREIGN KEY (dataset_id) REFERENCES public.datasets (id),
+    CONSTRAINT name_is_unique UNIQUE (dataset_id, name)
 );
 
 CREATE SEQUENCE public.subjects_id_seq
@@ -120,7 +121,8 @@ CREATE TABLE public.poses (
     subject_id integer NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT poses_subjects_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects (id),
-    CONSTRAINT poses_pose_type_fkey FOREIGN KEY (pose_type_id) REFERENCES public.pose_types (id)
+    CONSTRAINT poses_pose_type_fkey FOREIGN KEY (pose_type_id) REFERENCES public.pose_types (id),
+    CONSTRAINT pose_type_is_unique UNIQUE (pose_type_id, subject_id)
 );
 
 CREATE SEQUENCE public.poses_id_seq
@@ -140,9 +142,7 @@ ALTER SEQUENCE public.poses_id_seq OWNED BY public.poses.id;
 --
 CREATE TABLE public.geometries (
     id integer NOT NULL,
-    name character varying(50),
-    s3_bucket character varying(50) NOT NULL,
-    s3_path character varying(50) NOT NULL,
+    s3_key character varying(128) NOT NULL,
     version integer NOT NULL,
     pose_id integer NOT NULL,
     PRIMARY KEY (id),

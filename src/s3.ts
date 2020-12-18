@@ -59,3 +59,24 @@ export function createUploadBucketListPlugin({
     },
   }))
 }
+
+// This key name is intended only to maintain consistency. It's not intended to
+// be relied upon as a lookup convention. For lookups, use the `s3_key` field in
+// the database.
+export function s3KeyForGeometry({
+  datasetId,
+  subjectId,
+  poseId,
+  version,
+  extension = '.obj',
+}: {
+  datasetId: string
+  subjectId: number
+  poseId: number
+  version: number
+  extension?: string
+}): string {
+  // Prepend dataset ID as a hash.
+  // https://aws.amazon.com/blogs/aws/amazon-s3-performance-tips-tricks-seattle-hiring-event/
+  return `${datasetId}/geometries/${subjectId}/${poseId}/v${version}${extension}`
+}

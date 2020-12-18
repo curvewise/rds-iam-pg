@@ -62,25 +62,25 @@ COPY public.poses (pose_type_id, subject_id) FROM stdin;
 -- Measured geometries
 --
     
-COPY public.geometries (name, s3_bucket, s3_path, version, pose_id ) FROM stdin;
-body1	test_bucket	/bodies/body1.obj	1	1
-body2	test_bucket	/bodies/body2.obj	1	2
-body3	test_bucket	/bodies/body3.obj	1	3
-body1	test_bucket	/bodies/body1.obj	1	4
-body2	test_bucket	/bodies/body2.obj	1	5
-body3	test_bucket	/bodies/body3.obj	1	6
-body1	test_bucket	/bodies/body1.obj	1	7
-body2	test_bucket	/bodies/body2.obj	1	8
-body3	test_bucket	/bodies/body3.obj	1	9
-body4	test_bucket	/bodies/body4.obj	1	10
-body5	test_bucket	/bodies/body5.obj	1	11
-body6	test_bucket	/bodies/body6.obj	1	12
-body7	test_bucket	/bodies/body7.obj	1	13
-body8	test_bucket	/bodies/body8.obj	1	14
-body9	test_bucket	/bodies/body9.obj	1	15
-body10	test_bucket	/bodies/body10.obj	1	16
-body11	test_bucket	/bodies/body11.obj	1	17
-body12	test_bucket	/bodies/body12.obj	1	18
+COPY public.geometries (s3_key, version, pose_id ) FROM stdin;
+/bodies/body1.obj	1	1
+/bodies/body2.obj	1	2
+/bodies/body3.obj	1	3
+/bodies/body1.obj	1	4
+/bodies/body2.obj	1	5
+/bodies/body3.obj	1	6
+/bodies/body1.obj	1	7
+/bodies/body2.obj	1	8
+/bodies/body3.obj	1	9
+/bodies/body4.obj	1	10
+/bodies/body5.obj	1	11
+/bodies/body6.obj	1	12
+/bodies/body7.obj	1	13
+/bodies/body8.obj	1	14
+/bodies/body9.obj	1	15
+/bodies/body10.obj	1	16
+/bodies/body11.obj	1	17
+/bodies/body12.obj	1	18
 \.
 
 --
