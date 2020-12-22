@@ -18,21 +18,21 @@ export function createUploadBucketListPlugin({
 
   return makeExtendSchemaPlugin((build: Build) => ({
     typeDefs: gql`
-      type GoldilocksUploadBucketListResponse {
-        IsTruncated: Boolean
-        Marker: String
-        Name: String
-        Prefix: String
-        MaxKeys: Int
-        Contents: [GoldilocksUploadBucketListResponseContents!]
-      }
-
       type GoldilocksUploadBucketListResponseContents {
         Key: String!
         LastModified: Date!
         ETag: String!
         Size: Int!
         StorageClass: String!
+      }
+
+      type GoldilocksUploadBucketListResponse {
+        IsTruncated: Boolean!
+        Marker: String!
+        Name: String!
+        Prefix: String!
+        MaxKeys: Int!
+        Contents: [GoldilocksUploadBucketListResponseContents!]!
       }
 
       type UploadBuckeMetadata {
