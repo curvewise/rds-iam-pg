@@ -13,7 +13,9 @@ export function storageBucketForDeploymentEnvironment(
 export function graphileWorkerPostgresUserForDeploymentEnvironment(
   deploymentEnvironment: string
 ): string {
-  return `goldilocks_data_layer_${deploymentEnvironment}`
+  return `goldilocks_data_layer_${
+    deploymentEnvironment.match(/^sandbox/) ? 'sandbox' : deploymentEnvironment
+  }`
 }
 
 export function functionNameQualifiedForDeploymentEnvironment({
