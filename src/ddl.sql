@@ -66,6 +66,7 @@ CREATE TABLE public.datasets (
     body_part public.body_part_type NOT NULL,
     superior_direction public.axis_type,
     anterior_direction public.axis_type,
+    last_modified timestamptz NOT NULL DEFAULT NOW(),
     CONSTRAINT axes_null_together CHECK ((superior_direction IS NULL AND anterior_direction IS NULL) OR (superior_direction IS NOT NULL AND anterior_direction IS NOT NULL)),
     CONSTRAINT axes_orthogonal CHECK (superior_direction != anterior_direction OR superior_direction IS NULL),
     CONSTRAINT axes_required CHECK (
@@ -292,6 +293,72 @@ BEGIN
 END;
 $$
 language plpgsql;
+
+CREATE FUNCTION public.trigger_set_timestamp()
+    returns trigger
+    as $$
+BEGIN
+    NEW.last_modified = NOW();
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER set_timestamp
+    BEFORE UPDATE ON public.datasets
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.trigger_set_timestamp();
+
+CREATE FUNCTION public.trigger_set_timestamp_for_subjects()
+    returns trigger
+    as $$
+BEGIN
+    UPDATE public.datasets d
+    set last_modified = NOW()
+    WHERE NEW.dataset_id = d.id;
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER set_timestamp_for_subjects
+    AFTER INSERT OR UPDATE OR DELETE ON public.subjects
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.trigger_set_timestamp_for_subjects();
+
+CREATE FUNCTION public.trigger_set_timestamp_for_poses()
+    returns trigger
+    as $$
+DECLARE new_record_dataset_id int := (SELECT dataset_id from public.subjects where id = NEW.subject_id);
+BEGIN
+    UPDATE public.datasets d
+    set last_modified = NOW()
+    WHERE new_record_dataset_id = d.id;
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER set_timestamp_for_poses
+    AFTER INSERT OR UPDATE OR DELETE ON public.poses
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.trigger_set_timestamp_for_poses();
+
+CREATE FUNCTION public.trigger_set_timestamp_for_geometries()
+    returns trigger
+    as $$
+DECLARE 
+    new_record_subject_id int := (SELECT subject_id from public.poses where id = NEW.pose_id);
+    new_record_dataset_id int := (SELECT dataset_id from public.subjects where id = new_record_subject_id);
+BEGIN
+    UPDATE public.datasets d
+    set last_modified = NOW()
+    WHERE new_record_dataset_id = d.id;
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER set_timestamp_for_geometries
+    AFTER INSERT OR UPDATE OR DELETE ON public.geometries
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.trigger_set_timestamp_for_geometries();
 
 CREATE TRIGGER validate_job_result_trigger
     BEFORE INSERT OR UPDATE ON public.job_results
@@ -580,4 +647,3 @@ CREATE TABLE public.checked_uploads (
     predicted_body_units public.units_type,
     topology public.topology_type
 );
-
