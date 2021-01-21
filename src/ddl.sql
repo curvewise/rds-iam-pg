@@ -95,7 +95,7 @@ ALTER TABLE ONLY public.datasets
 --
 CREATE TABLE public.subjects (
     id integer NOT NULL,
-    name character varying(50),
+    name character varying(50) NOT NULL,
     gender character (1),
     dataset_id integer NOT NULL,
     PRIMARY KEY (id),
