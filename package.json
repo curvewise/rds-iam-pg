@@ -49,5 +49,8 @@
     "prettier": "^2.2.1",
     "ts-mocha": "^8.0.0"
   },
-  "main": "src"
+  "main": "src",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/curvewise"
+  }
 }
