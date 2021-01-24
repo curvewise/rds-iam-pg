@@ -2,7 +2,6 @@ import AWS from 'aws-sdk'
 import { Pool } from 'pg'
 import fs from 'fs'
 import path from 'path'
-import { run, Runner } from 'graphile-worker'
 import { getSharedIniFileCredentialsFromAwsProfileIfDefined } from './aws-common'
 
 export interface PostgresAddress {
@@ -53,4 +52,3 @@ export function createRdsPgPool({
     },
   })
 }
-
