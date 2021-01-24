@@ -51,5 +51,6 @@
   "main": "src",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/curvewise"
-  }
+  },
+  "repository": "curvewise/node-rds-graphile-worker-client"
 }
