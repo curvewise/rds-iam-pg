@@ -3,7 +3,6 @@ import { Pool } from 'pg'
 import fs from 'fs'
 import path from 'path'
 import { run, Runner } from 'graphile-worker'
-import { createS3CheckObjTask } from './tasks/s3-check-obj'
 import { getSharedIniFileCredentialsFromAwsProfileIfDefined } from './aws-common'
 
 export interface PostgresAddress {
@@ -55,21 +54,3 @@ export function createRdsPgPool({
   })
 }
 
-export async function startGraphileWorker({
-  graphileWorkerPgPool,
-  postgraphilePgPool,
-}: {
-  graphileWorkerPgPool: Pool
-  postgraphilePgPool: Pool
-}): Promise<Runner> {
-  return run({
-    pgPool: graphileWorkerPgPool,
-    concurrency: 5,
-    // Install signal handlers for graceful shutdown on SIGINT, SIGTERM, etc.
-    noHandleSignals: false,
-    pollInterval: 1000,
-    taskList: {
-      's3-check-obj': createS3CheckObjTask(postgraphilePgPool),
-    },
-  })
-}
