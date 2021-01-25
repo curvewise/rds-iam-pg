@@ -30,11 +30,11 @@ jobs:
           name: Install Node dependencies
           command: npm ci
 
-      - run:
-          name: Run tests
-          environment:
-            NODE_CONFIG_ENV: ci
-          command: npm test
+      # - run:
+      #     name: Run tests
+      #     environment:
+      #       NODE_CONFIG_ENV: ci
+      #     command: npm test
 
       - run:
           name: Check types
