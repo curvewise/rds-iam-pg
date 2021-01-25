@@ -27,22 +27,14 @@ jobs:
             psql $DATABASE_URL -c "SELECT version();"
 
       - run:
-          name: Configure credentials for GitHub Package Registry
-          command: npm run configure-github-package-registry
-
-      - run:
           name: Install Node dependencies
           command: npm ci
 
-      - run:
-          name: Check that seed data will load
-          command: npm run load-seed-data
-
-      - run:
-          name: Run tests
-          environment:
-            NODE_CONFIG_ENV: ci
-          command: npm test
+      # - run:
+      #     name: Run tests
+      #     environment:
+      #       NODE_CONFIG_ENV: ci
+      #     command: npm test
 
       - run:
           name: Check types
@@ -55,10 +47,6 @@ jobs:
 
     steps:
       - checkout
-
-      - run:
-          name: Configure credentials for GitHub Package Registry
-          command: npm run configure-github-package-registry
 
       - run:
           name: Install Node dependencies
@@ -76,10 +64,6 @@ jobs:
       - checkout
 
       - run:
-          name: Configure credentials for GitHub Package Registry
-          command: npm run configure-github-package-registry
-
-      - run:
           name: Install Node dependencies
           command: npm ci
 
@@ -92,12 +76,9 @@ workflows:
 
   on-commit:
     jobs:
-      - test:
-          context: 'GitHub - Read packages'
-      - lint:
-          context: 'GitHub - Read packages'
-      - format:
-          context: 'GitHub - Read packages'
+      - test
+      - lint
+      - format
 
   daily:
     triggers:
@@ -107,9 +88,6 @@ workflows:
             branches:
               only: main
     jobs:
-      - test:
-          context: 'GitHub - Read packages'
-      - lint:
-          context: 'GitHub - Read packages'
-      - format:
-          context: 'GitHub - Read packages'
+      - test
+      - lint
+      - format

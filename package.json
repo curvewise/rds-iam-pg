@@ -7,8 +7,8 @@
     "test": "ts-mocha --exit \"src/**/*.test.ts\"",
     "check-types": "tsc --noEmit",
     "lint": "eslint . --ext js,ts",
-    "format:js:check": "prettier --check \"**/*.@(ts|js|md|json|yml)\"",
-    "format:js:fix": "prettier --write \"**/*.@(ts|js|md|json|yml)\""
+    "format:check": "prettier --check \"**/*.@(ts|js|md|json|yml)\"",
+    "format:fix": "prettier --write \"**/*.@(ts|js|md|json|yml)\""
   },
   "author": "Curvewise",
   "license": "UNLICENSED",
