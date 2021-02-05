@@ -11,6 +11,7 @@ export interface PostgresAddress {
   database: string
 }
 
+
 export function createRdsPgPool({
   awsRegion,
   address: { host, port, user, database },
