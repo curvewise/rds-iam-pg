@@ -10,8 +10,13 @@ export function getSharedIniFileCredentialsFromAwsProfileIfDefined(
 
 export function loadConfig({
   awsProfile,
-}: { awsProfile?: string } = {}): AWS.Config {
+  options,
+}: {
+  awsProfile?: string
+  options?: Partial<AWS.ConfigurationOptions>
+} = {}): AWS.Config {
   return new AWS.Config({
+    ...options,
     credentials: getSharedIniFileCredentialsFromAwsProfileIfDefined(awsProfile),
   })
 }
