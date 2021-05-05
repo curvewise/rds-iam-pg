@@ -20,9 +20,6 @@
   "peerDependencies": {
     "aws-sdk": "*"
   },
-  "engines": {
-    "node": "12.9.1"
-  },
   "devDependencies": {
     "@types/chai": "^4.2.14",
     "@types/chai-as-promised": "^7.1.3",
