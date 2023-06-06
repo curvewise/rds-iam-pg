@@ -1,9 +1,14 @@
 version: 2
+
+with_node: &with_node
+  docker:
+    - image: cimg/node:16.15
+
 jobs:
   test:
     # Adapted from https://circleci.com/docs/2.0/databases/#postgresql-database-testing-example
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:16.15
         environment:
           DATABASE_URL: postgresql://circleci:AchTMOV0lWxIJO7Os0YCZ7iUAOp2OCm3XP2pWjsfIcE@localhost/circle_test
       - image: circleci/postgres:12.4
@@ -42,8 +47,7 @@ jobs:
           command: npm run check-types
 
   lint:
-    docker:
-      - image: circleci/node:12
+    <<: *with_node
 
     steps:
       - checkout
@@ -57,8 +61,7 @@ jobs:
           command: npm run lint
 
   format:
-    docker:
-      - image: circleci/node:12
+    <<: *with_node
 
     steps:
       - checkout
