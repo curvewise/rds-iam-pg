@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
 
 export function getSharedIniFileCredentialsFromAwsProfileIfDefined(
-  awsProfile?: string
+  awsProfile?: string,
 ): AWS.SharedIniFileCredentials | undefined {
   return awsProfile
     ? new AWS.SharedIniFileCredentials({ profile: awsProfile })
