@@ -1,6 +1,6 @@
 {
   "name": "rds-iam-pg",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Convenience functions for connecting to RDS Postgres using IAM auth",
   "scripts": {
     "prebuild": "del dist",

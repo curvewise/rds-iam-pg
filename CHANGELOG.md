@@ -1,8 +1,12 @@
 # Changelog
 
-## 1.0.2
+## 2.0.0
 
-Initial public release (same as 1.0.1).
+Initial public release.
+
+### BREAKING CHANGES
+
+- Move `pg` from dependencies to peer dependencies.
 
 ## 1.0.1
 
