@@ -14,7 +14,7 @@
   },
   "public": true,
   "author": "Metabolize LLC",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "dependencies": {},
   "peerDependencies": {
     "aws-sdk": "2.x",
