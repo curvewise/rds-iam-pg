@@ -44,7 +44,7 @@ export function createRdsPgPool({
             '..',
             'common-assets',
             'certificates',
-            'rds-ca-2019-root.pem',
+            'global-bundle.pem'
           ),
           'ascii',
         ),
