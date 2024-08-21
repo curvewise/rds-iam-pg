@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+- Update SSL/TLS certificates.
+
 ## 2.0.0
 
 Initial public release.
